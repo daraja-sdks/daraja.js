@@ -2,16 +2,24 @@
   "name": "daraja",
   "version": "1.0.0",
   "description": "A wrapper for seamless integration with Mpesa's Daraja API",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fmt": "prettier --write ./**/*.{js,ts,jsx,tsx}",
+    "check:fmt": "prettier --check ./**/*.{js,ts}"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ndaba1/daraja.js.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "node-mpesa", "mpesa", "daraja", "safaricom-api", "mpesa-api"
+  ],
+  "files": [
+    "./lib"
+  ],
+  "author": "Victor Ndaba <vndabam@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ndaba1/daraja.js/issues"
