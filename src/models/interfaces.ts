@@ -123,6 +123,7 @@ export interface B2BInterface {
   /**
    * This is what the customer would enter as the account number when making payment to a paybill
    */
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   AccountReference: any;
   /**
    * This is a publicly accessible url where mpesa will send the response to when the request times out. Must accept POST requests
