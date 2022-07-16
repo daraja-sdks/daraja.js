@@ -1,12 +1,13 @@
 {
-  "name": "daraja",
-  "version": "1.0.0",
+  "name": "daraja.js",
+  "version": "0.1.0",
   "description": "A wrapper for seamless integration with Mpesa's Daraja API",
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "fmt": "prettier --write ./**/*.{js,ts,jsx,tsx}",
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "fmt": "prettier --write ./**/*.{js,ts}",
     "check:fmt": "prettier --check ./**/*.{js,ts}"
   },
   "repository": {
