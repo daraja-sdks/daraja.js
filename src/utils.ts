@@ -17,8 +17,8 @@ export class HttpClient {
       : (this.baseUrl = routes.sandbox);
   }
 
-  public async get(url: string, headers: any) {
-    return axios.get(this.baseUrl + url, {
+  public async get<T>(url: string, headers: any) {
+    return axios.get<T>(this.baseUrl + url, {
       headers: {
         ...headers,
         "Content-Type": "application/json",
@@ -26,7 +26,7 @@ export class HttpClient {
     });
   }
 
-  public async post(url: string, body: any, hds: any) {
+  public async post<T>(url: string, body: T, hds: any) {
     return axios.post(this.baseUrl + url, body, {
       headers: {
         ...hds,
