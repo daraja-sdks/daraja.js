@@ -1,6 +1,6 @@
-import { B2CInterface, CommandID } from "models/interfaces";
-import { routes } from "models/routes";
-import { Mpesa } from "../index";
+import { B2CInterface, CommandID } from "../models/interfaces";
+import { routes } from "../models/routes";
+import { _BuilderConfig } from "../utils";
 
 export class BusinessToCustomer {
   private _initiator: string;
@@ -13,7 +13,7 @@ export class BusinessToCustomer {
   private _resultURL: string;
   private _occassion: string;
 
-  constructor(private app: Mpesa) {}
+  constructor(private config: _BuilderConfig) {}
 
   /**
    * Business/Organization shortcode
@@ -62,37 +62,72 @@ export class BusinessToCustomer {
     return this;
   }
 
+  /**
+   * Initiator Name
+   *
+   * @description A method to the initiator name for the transaction
+   * @param  {string} name This is the credential/username used to authenticate the transaction request.
+   * @returns {BusinessToCustomer} Returns a reference to the B2C object for further manipulation
+   */
   public initiatorName(name: string): BusinessToCustomer {
     this._initiator = name;
     return this;
   }
 
+  /**
+   * Remarks
+   *
+   * @description A method used to pass any additional remarks
+   * @param  {string} value Comments that are sent along with the transaction.
+   * @returns {BusinessToCustomer} Returns a reference to the B2C object for further manipulation
+   */
   public remarks(value: string): BusinessToCustomer {
     this._remarks = value;
     return this;
   }
 
+  /**
+   * Timeout URL/ Queue timeout url
+   *
+   * @description A method for setting the timeout URL
+   * @param  {string} url The end-point that receives a timeout response.
+   * @returns {BusinessToCustomer} Returns a reference to the B2C object for further manipulation
+   */
   public timeoutURL(url: string): BusinessToCustomer {
     this._timeoutURL = url;
     return this;
   }
 
+  /**
+   * Result URL
+   *
+   * @description A method for setting the Result URL
+   * @param  {string} url The end-point that receives the response of the transaction
+   * @returns {BusinessToCustomer} Returns a reference to the B2C object for further manipulation
+   */
   public resultURL(url: string): BusinessToCustomer {
     this._resultURL = url;
     return this;
   }
 
+  /**
+   * Occassion - optional
+   *
+   * @description A method for setting an optional `occaccion` value
+   * @param  {string} value The occassion necessitating the payment
+   * @returns {BusinessToCustomer} Returns a reference to the B2C object for further manipulation
+   */
   public occassion(value: string): BusinessToCustomer {
     this._occassion = value;
     return this;
   }
 
   public async makePayment() {
-    const app = this.app;
-    const token = await app._getAuthToken();
+    const app = this.config;
+    const token = await app.getAuthToken();
 
     try {
-      const { data } = await app._http.post<B2CInterface>(
+      const { data } = await app.http.post<B2CInterface>(
         routes.b2c,
         {
           Amount: this._amount,
