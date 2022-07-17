@@ -1,10 +1,13 @@
-import { Mpesa } from "../index";
 import {
   StkPushInterface,
   StkPushResponseInterface,
+  STKPushResultInterface,
   StkQueryInterface,
+  StkQueryResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
+import { errorAssert, _BuilderConfig } from "../utils";
+import { MpesaResponse } from "../wrappers";
 
 export class STKPush {
   private _amount: number;
@@ -14,12 +17,13 @@ export class STKPush {
   private _accountRef: string;
   private _password: string;
   private _description: string;
-  private _transactionType: string;
+  private _transactionType: "CustomerPayBillOnline" | "CustomerBuyGoodsOnline";
   private _checkoutRequestID: string;
 
-  constructor(private app: Mpesa) {
+  constructor(private config: _BuilderConfig) {
     // defaults
     this._transactionType = "CustomerPayBillOnline";
+    this._callbackURL = "https://example.com";
   }
 
   private _getTimeStamp(): string {
@@ -33,6 +37,17 @@ export class STKPush {
     return Buffer.from(
       this._shortCode + this._password + this._getTimeStamp()
     ).toString("base64");
+  }
+
+  private _debugAssert() {
+    if (!this._shortCode) {
+      this._shortCode = String(this.config.shortCode);
+    }
+
+    errorAssert(this._shortCode, "A shortcode must be provided");
+    errorAssert(this._amount, "An amount must be provided");
+    errorAssert(this._phoneNumber, "A phone number must be provided");
+    errorAssert(this._password, "Please provide your Lipa na Mpesa password");
   }
 
   /**
@@ -73,14 +88,16 @@ export class STKPush {
    * Payment Type / Transaction Type
    *
    * @description Set the transaction type to be made
-   * @param {string} id The type of transaction to be made. This refers to the whether the transaction is buy goods and services or paybill. Valid values are `paybill` or `buy-goods`.
+   * @param {string} id The type of transaction to be made. This refers to the whether the transaction is buy goods and services or paybill. Valid values are `CustomerPayBillOnline` or `CustomerBuyGoodsOnline`.
    * @returns {STKPush} Returns a reference to the STKPush object for further manipulation
    */
-  public paymentType(id: string): STKPush {
-    if (id.toLowerCase() === "paybill") {
+  public paymentType(
+    id: "CustomerPayBillOnline" | "CustomerBuyGoodsOnline"
+  ): STKPush {
+    if (id !== ("CustomerPayBillOnline" || "CustomerBuyGoodsOnline")) {
       this._transactionType = "CustomerPayBillOnline";
     } else {
-      this._transactionType = "CustomerBuyGoodsOnline";
+      this._transactionType = id;
     }
     return this;
   }
@@ -121,13 +138,31 @@ export class STKPush {
     return this;
   }
 
-  public async makePayment(): Promise<StkPushResponseInterface> {
-    const app = this.app;
-    const token = await app._getAuthToken();
+  /**
+   * @description Use this method to manually set the checkout request ID.
+   * @param  {string} id This is a global unique identifier of the processed checkout transaction request.
+   * @returns {STKPush} Returns a reference to the STKPush object for further manipulation
+   */
+  public checkoutRequestID(id: string): STKPush {
+    this._checkoutRequestID = id;
+    return this;
+  }
+
+  /**
+   * Make the STKPush/Lipa na Mpesa online payment request
+   *
+   * @description This method actually invokes the API endpoint using the configured fields. Once a response is received from the daraja API, it gets wrapped in the `STKPushResponseWrapper` class which provides you with a lot of convenience methods.
+   * @returns {Promise<STKPushResponseWrapper>} A class that wraps the bare response to give you access to methods such as `.isOkay()` etc.
+   */
+  public async makePayment(): Promise<STKPushResponseWrapper> {
+    this._debugAssert();
+
+    const app = this.config;
+    const token = await app.getAuthToken();
     const password = this._getPassword();
 
     try {
-      const { data } = await app._http.post<StkPushInterface>(
+      const { data } = await app.http.post<StkPushInterface>(
         routes.stkpush,
         {
           AccountReference: this._accountRef,
@@ -139,18 +174,15 @@ export class STKPush {
           passKey: password,
           PhoneNumber: String(this._phoneNumber),
           TransactionDesc: this._description,
-          TransactionType:
-            this._transactionType === "CustomerPayBillOnline"
-              ? "CustomerPayBillOnline"
-              : "CustomerBuyGoodsOnline",
+          TransactionType: this._transactionType,
         },
         {
           Authorization: `Bearer ${token}`,
         }
       );
 
-      const values: StkPushResponseInterface = data;
-      this._checkoutRequestID = values.CheckoutRequestID;
+      const values = new STKPushResponseWrapper(data);
+      this._checkoutRequestID = values.getTransactionID();
 
       return values;
     } catch (error) {
@@ -159,12 +191,14 @@ export class STKPush {
     }
   }
 
-  public async queryStatus() {
-    const app = this.app;
+  public async queryStatus(): Promise<STKQueryResponseWrapper> {
+    this._debugAssert();
+
+    const app = this.config;
     const password = this._getPassword();
-    const token = await app._getAuthToken();
+    const token = await app.getAuthToken();
     try {
-      const { data } = await app._http.post<StkQueryInterface>(
+      const { data } = await app.http.post<StkQueryInterface>(
         routes.stkquery,
         {
           BusinessShortCode: +this._shortCode,
@@ -175,8 +209,8 @@ export class STKPush {
           Authorization: `Bearer ${token}`,
         }
       );
-      console.log(data);
-      return data;
+
+      return new STKQueryResponseWrapper(data);
     } catch (error) {
       console.log(error.data);
       throw new Error(error);
@@ -184,10 +218,124 @@ export class STKPush {
   }
 }
 
-export class STKPushResultWrapper {
+// Wraps the response from Daraja after making payment request
+class STKPushResponseWrapper implements MpesaResponse {
   constructor(private data: StkPushResponseInterface) {}
+
+  public isOkay(): boolean {
+    return this.data.ResponseCode === "0";
+  }
+
+  public getResponseCode(): string {
+    return this.data.ResponseCode;
+  }
+
+  public getResponseDescription(): string {
+    return this.data.ResponseDescription;
+  }
+  /**
+   * @description This method is used to get the checkout request id which is globally unique identifier used to identify your transaction. It can be used to query the status of the transaction.
+   * @returns {string} The transaction id/checkout request id
+   */
+  public getTransactionID(): string {
+    return this.data.CheckoutRequestID;
+  }
 }
 
-export class STKPushV2ResultWrapper {
-  constructor(private data: StkPushResponseInterface) {}
+// Wraps the response from Daraja after making status query request
+class STKQueryResponseWrapper implements MpesaResponse {
+  constructor(private data: StkQueryResponseInterface) {}
+
+  public isOkay(): boolean {
+    return (this.data.ResultCode && this.data.ResponseCode) === "0";
+  }
+
+  public getResponseCode(): string {
+    return this.data.ResponseCode;
+  }
+
+  public getResponseDescription(): string {
+    return this.data.ResponseDescription;
+  }
+
+  /**
+   * @returns {string} Result description is a message from the API that gives the status of the request processing, usualy maps to a specific ResultCode value. It can be a Success processing message or an error description message. e.g 1032: Request cancelled by user
+   */
+  public getResultDescription(): string {
+    return this.data.ResultDesc;
+  }
+}
+
+// Wraps the Result from Daraja received in the callback url
+export class STKPushResultWrapper {
+  constructor(private data: STKPushResultInterface) {}
+
+  private _getCallbackField(name: string): string {
+    const items = this.data.Body.stkCallback.CallbackMetadata.Item;
+    for (const { Name, Value } of items) {
+      if (Name === name) {
+        return Value;
+      }
+    }
+  }
+
+  /**
+   * @description This method is used to determine whether the payment was made by the sender and the transaction completed successfully.
+   * @returns {boolean} Whether the stkPush transaction was completed successfully
+   */
+  public isOkay(): boolean {
+    return this.data.Body.stkCallback.ResultCode === 0;
+  }
+
+  /**
+   * @description A method used to get the result code of the transaction
+   * @returns {number} The result code of the lipa na mpesa transaction.  0 means successful processing and any other code means an error occured or the transaction failed.
+   */
+  public getResultCode(): number {
+    return this.data.Body.stkCallback.ResultCode;
+  }
+
+  /**
+   * @returns {string} Result description is a message from the API that gives the status of the request processing, usualy maps to a specific ResultCode value. It can be a Success processing message or an error description message.
+   */
+  public getResultDescription(): string {
+    return this.data.Body.stkCallback.ResultDesc;
+  }
+
+  /**
+   * @description A method to get the Mpesa Receipt No eg. LHG31AA5TX
+   * @returns {string} This is the unique M-PESA transaction ID for the payment request. Same value is sent to customer over SMS upon successful processing.
+   */
+  public getMpesaReceiptNo(): string {
+    return this._getCallbackField("MpesaReceiptNumber");
+  }
+
+  /**
+   * @description A method to get the sender's phone no. In the V2 API, some of the digits are masked for customer privacy protection
+   * @returns {string} This is the number of the customer who made the payment.
+   */
+  public getSenderPhoneNo(): string {
+    return this._getCallbackField("PhoneNumber");
+  }
+
+  /**
+   * @returns {number} This is the Amount that was transacted
+   */
+  public getTransactionAmount(): number {
+    return +this._getCallbackField("Amount");
+  }
+
+  /**
+   * @returns {number} This is the Balance of the account for the shortcode used as partyB
+   */
+  public getAccountBalance(): number {
+    return +this._getCallbackField("Balance");
+  }
+
+  /**
+   * @returns {string} This is a timestamp that represents the date and time that the transaction completed in the formart YYYYMMDDHHmmss
+   */
+  public getTransactionTimestamp(): string {
+    return this._getCallbackField("TransactionDate");
+  }
 }
