@@ -1,7 +1,10 @@
-import { Mpesa } from "../index";
-import { C2BRegisterInterface } from "../models/interfaces";
+import {
+  C2BRegisterInterface,
+  C2BRegisterResponseInterface,
+  C2BSimulateResponseInterface,
+} from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert } from "../utils";
+import { errorAssert, _BuilderConfig } from "../utils";
 
 export class CustomerToBusiness {
   private _amount: number;
@@ -12,26 +15,25 @@ export class CustomerToBusiness {
   private _confirmationUrl: string;
   private _commandID: string;
   private _billRefNo: string;
-  private _responseType: string;
+  private _responseType: "Cancelled" | "Completed";
 
-  constructor(private app: Mpesa) {
+  constructor(private config: _BuilderConfig) {
     // setup defaults
     this._commandID = "CustomerPayBillOnline";
     this._responseType = "Cancelled";
   }
 
   private _debugAssert(level: string) {
+    if (!this._shortCode) {
+      this._shortCode = String(this.config.shortCode);
+    }
+
     errorAssert(this._amount, "An amount must be set for C2B to function");
     errorAssert(
       this._phoneNumber,
       "A Phone Number must be set for C2B to function"
     );
     errorAssert(this._shortCode, "Short code must be set for C2B to function");
-    this._commandID === "CustomerPayBillOnline" &&
-      errorAssert(
-        this._billRefNo,
-        "An account number must be provided when using paybill payment type"
-      );
 
     if (level === "full") {
       errorAssert(this._callbackUrl, "Please set a callback url");
@@ -81,11 +83,13 @@ export class CustomerToBusiness {
    * @param {string} id The type of payment to be made. This refers to the whether the payment is buy goods and services or paybill. Valid values are `paybill` or `buy-goods`.
    * @returns {CustomerToBusiness} Returns a reference to the C2B object for further manipulation
    */
-  public paymentType(id: string): CustomerToBusiness {
-    if (id.toLowerCase() === "paybill") {
+  public paymentType(
+    id: "CustomerPayBillOnline" | "CustomerBuyGoodsOnline"
+  ): CustomerToBusiness {
+    if (id !== ("CustomerPayBillOnline" || "CustomerBuyGoodsOnline")) {
       this._commandID = "CustomerPayBillOnline";
     } else {
-      this._commandID = "CustomerBuyGoodsOnline";
+      this._commandID = id;
     }
     return this;
   }
@@ -150,61 +154,106 @@ export class CustomerToBusiness {
     return this;
   }
 
-  public async simulate() {
+  public async simulate(): Promise<C2BSimulateResponseWrapper> {
     // run assertions
     this._debugAssert("basic");
-    const app = this.app;
-    const token = await app._getAuthToken();
+
+    const app = this.config;
+    const token = await app.getAuthToken();
 
     try {
-      const { data } = await app._http.post(
+      const { data } = await app.http.post(
         routes.c2bsimulate,
         {
           ShortCode: this._shortCode,
           CommandID: this._commandID,
           Amount: this._amount,
           Msisdn: this._phoneNumber,
-          BillRefNumber: this._billRefNo,
+          BillRefNumber: this._billRefNo ?? this._phoneNumber,
         },
         {
           Authorization: `Bearer ${token}`,
         }
       );
 
-      console.log(data);
-      return data;
+      const values = new C2BSimulateResponseWrapper(data);
+      return values;
     } catch (error) {
       console.log(error.data);
       throw new Error(error);
     }
   }
 
-  public async registerUrls() {
+  public async registerUrls(): Promise<C2BRegisterResponseWrapper> {
     // run assertions
     this._debugAssert("full");
 
-    const app = this.app;
-    const token = await app._getAuthToken();
+    const app = this.config;
+    const token = await app.getAuthToken();
 
     try {
-      const { data } = await app._http.post<C2BRegisterInterface>(
+      const { data } = await app.http.post<C2BRegisterInterface>(
         routes.c2bregister,
         {
           ShortCode: +this._shortCode,
           ConfirmationURL: this._confirmationUrl,
           ValidationURL: this._validationUrl,
-          ResponseType:
-            this._responseType === "Cancelled" ? "Cancelled" : "Completed",
+          ResponseType: this._responseType,
         },
         {
           Authorization: `Bearer ${token}`,
         }
       );
-      console.log(data);
-      return data;
+
+      const values = new C2BRegisterResponseWrapper(data);
+      return values;
     } catch (error) {
       console.log(error.data);
       throw new Error(error);
     }
+  }
+}
+
+class C2BSimulateResponseWrapper {
+  constructor(public data: C2BSimulateResponseInterface) {}
+
+  public isOkay(): boolean {
+    const desc = this.data.ResponseDescription;
+    return desc.includes("successfully") || desc.includes("accepted");
+  }
+
+  public getResponseDescription(): string {
+    return this.data.ResponseDescription;
+  }
+
+  public getConversationID(): string {
+    return this.data.ConversationID;
+  }
+
+  public getOriginatorConversationID(): string {
+    return this.data.OriginatorCoversationID;
+  }
+}
+
+class C2BRegisterResponseWrapper {
+  constructor(public data: C2BRegisterResponseInterface) {}
+
+  public isOkay(): boolean {
+    return (
+      this.data.ResponseDescription.includes("success") ||
+      this.data.ResponseCode === "0"
+    );
+  }
+
+  public getResponseDescription(): string {
+    return this.data.ResponseDescription;
+  }
+
+  public getResponseCode(): string {
+    return this.data.ResponseCode;
+  }
+
+  public getOriginatorConversationID(): string {
+    return this.data.OriginatorCoversationID;
   }
 }
