@@ -1,6 +1,13 @@
 import axios from "axios";
 import { routes } from "./models/routes";
 
+export interface _BuilderConfig {
+  http: HttpClient;
+  shortCode: number;
+  securityCredential: string;
+  getAuthToken(): Promise<string>;
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function errorAssert(condition: any, msg: string) {
   if (!condition) {
