@@ -677,8 +677,8 @@ export interface C2BRegisterInterface {
 export type ResponseType = "Completed" | "Cancelled";
 
 export interface C2BRegisterResponseInterface {
-  ConversationID: string;
   OriginatorCoversationID: string;
+  ResponseCode: string;
   ResponseDescription: string;
 }
 
@@ -729,3 +729,88 @@ export interface C2BSimulateResponseInterface {
   OriginatorCoversationID: string;
   ResponseDescription: string;
 }
+
+export interface ValidationRequestInterface {
+  /**
+   * {
+   "TransactionType":"Pay Bill",
+   "TransID":"RKTQDM7W6S",
+   "TransTime":"20191122063845",
+   "TransAmount":"10",
+   "BusinessShortCode":"600638",
+   "BillRefNumber":"254708374149",
+   "InvoiceNumber":"",
+   "OrgAccountBalance":"49197.00",
+   "ThirdPartyTransID":"",
+   "MSISDN":"254708374149",
+   "FirstName":"John",
+   "MiddleName":"",
+   "LastName":"Doe"
+}
+   */
+  TransactionType: string;
+  TransID: string;
+  TransTime: string;
+  TransAmount: string;
+  BusinessShortCode: string;
+  BillRefNumber: string;
+  InvoiceNumber: string;
+  OrgAccountBalance: string;
+  ThirdPartyTransID: string;
+  MSISDN: string;
+  FirstName: string;
+  MiddleName: string;
+  LastName: string;
+}
+
+export interface ValidationRequestV2Interface {
+  /**
+   * {
+   "TransactionType":"Pay Bill",
+   "TransID":"RKTQDM7W6S",
+   "TransTime":"20191122063845",
+   "TransAmount":"10",
+   "BusinessShortCode":"600638",
+   "BillRefNumber":"A123",
+   "InvoiceNumber":"",
+   "OrgAccountBalance":"49197.00",
+   "ThirdPartyTransID":"",
+   "MSISDN":"2547*****149",
+   "FirstName":"John",
+}
+   */
+  TransactionType: string;
+  TransID: string;
+  TransTime: string;
+  TransAmount: string;
+  BusinessShortCode: string;
+  BillRefNumber: string;
+  InvoiceNumber: string;
+  OrgAccountBalance: string;
+  ThirdPartyTransID: string;
+  MSISDN: string;
+  FirstName: string;
+}
+
+export interface ValidationResponseInterface {
+  /**
+   * 0 - Accepted
+   *
+   * C2B00011 - Invalid MSISDN
+   *
+   * C2B00012 - Invalid Account Number
+   *
+   * C2B00013 - Invalid Amount
+   *
+   * C2B00014 - Invalid KYC Details
+   *
+   * C2B00015 - Invalid shortcode
+   *
+   * C2B00016 - Other Error
+   */
+  ResultCode: string;
+  ResultDesc: string;
+}
+
+export type ConfirmationRequestInterface = ValidationRequestInterface;
+export type ConfirmationRequestV2Interface = ValidationRequestV2Interface;
