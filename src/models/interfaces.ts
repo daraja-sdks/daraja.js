@@ -636,6 +636,31 @@ export interface StkQueryResponseInterface {
   ResultCode: string;
   ResultDesc: string;
 }
+
+export interface STKPushResultInterface {
+  Body: {
+    stkCallback: {
+      MerchantRequestID: string;
+      CheckoutRequestID: string;
+      ResultCode: number;
+      ResultDesc: string;
+      /**
+       * Amount: number;
+       * MpesaReceiptNumber: string;
+       * Balance: number;
+       * TransactionDate: string;
+       * PhoneNumber: string;
+       */
+      CallbackMetadata: {
+        Item: Array<{
+          Name: string;
+          Value: string;
+        }>;
+      };
+    };
+  };
+}
+
 export interface C2BRegisterInterface {
   ShortCode: number;
   /**
