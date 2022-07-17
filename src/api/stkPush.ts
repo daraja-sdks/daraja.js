@@ -191,6 +191,12 @@ export class STKPush {
     }
   }
 
+  /**
+   * Query the status of an STKPush Transactions
+   *
+   * @description This method queries the daraja API for the status of a transaction already executed. The received response from daraja is then wrapped in the `STKQueryResponseWrapper` which contains various utility methods to access the data.
+   * @returns {Promise<STKQueryResponseWrapper>} A class that wraps the bare response from Daraja after querrying the status of an STKPush transaction.
+   */
   public async queryStatus(): Promise<STKQueryResponseWrapper> {
     this._debugAssert();
 
@@ -220,7 +226,7 @@ export class STKPush {
 
 // Wraps the response from Daraja after making payment request
 class STKPushResponseWrapper implements MpesaResponse {
-  constructor(private data: StkPushResponseInterface) {}
+  constructor(public data: StkPushResponseInterface) {}
 
   public isOkay(): boolean {
     return this.data.ResponseCode === "0";
@@ -244,7 +250,7 @@ class STKPushResponseWrapper implements MpesaResponse {
 
 // Wraps the response from Daraja after making status query request
 class STKQueryResponseWrapper implements MpesaResponse {
-  constructor(private data: StkQueryResponseInterface) {}
+  constructor(public data: StkQueryResponseInterface) {}
 
   public isOkay(): boolean {
     return (this.data.ResultCode && this.data.ResponseCode) === "0";
@@ -259,6 +265,13 @@ class STKQueryResponseWrapper implements MpesaResponse {
   }
 
   /**
+   * @returns {string} This is a numeric status code that indicates the status of the transaction processing. 0 means successful processing and any other code means an error occured or the transaction failed.
+   */
+  public getResultCode(): string {
+    return this.data.ResultCode;
+  }
+
+  /**
    * @returns {string} Result description is a message from the API that gives the status of the request processing, usualy maps to a specific ResultCode value. It can be a Success processing message or an error description message. e.g 1032: Request cancelled by user
    */
   public getResultDescription(): string {
@@ -268,7 +281,7 @@ class STKQueryResponseWrapper implements MpesaResponse {
 
 // Wraps the Result from Daraja received in the callback url
 export class STKPushResultWrapper {
-  constructor(private data: STKPushResultInterface) {}
+  constructor(public data: STKPushResultInterface) {}
 
   private _getCallbackField(name: string): string {
     const items = this.data.Body.stkCallback.CallbackMetadata.Item;
