@@ -1,10 +1,16 @@
 import { RSA_PKCS1_PADDING } from "constants";
 import { publicEncrypt } from "crypto";
 import { promises } from "fs";
+import { BusinessToCustomer } from "./api/b2c";
 import { CustomerToBusiness } from "./api/c2b";
-import { STKPush } from "./api/stkPush";
+import { STKPush, STKPushResultWrapper } from "./api/stkPush";
 import { routes } from "./models/routes";
-import { getProductionCert, getSandboxCert, HttpClient } from "./utils";
+import {
+  getProductionCert,
+  getSandboxCert,
+  HttpClient,
+  _BuilderConfig,
+} from "./utils";
 
 interface MpesaCredentials {
   consumerKey: string;
@@ -16,7 +22,7 @@ interface MpesaCredentials {
 }
 
 export class Mpesa {
-  _http: HttpClient;
+  private _http: HttpClient;
   private _lastTokenTime: number;
   private _currentToken: string;
   private consumerKey: string;
@@ -24,6 +30,7 @@ export class Mpesa {
   private initiatorPassword: string;
   private securityCredential: string;
   private globalShortCode: number;
+  private builderCfg: _BuilderConfig;
 
   constructor(
     {
@@ -40,6 +47,11 @@ export class Mpesa {
     this.consumerSecret = consumerSecret;
     this.globalShortCode = organizationShortCode;
     this._http = new HttpClient(this.environment);
+    this.builderCfg = {
+      getAuthToken: this._getAuthToken,
+      http: this._http,
+      shortCode: this.globalShortCode,
+    };
 
     if (!this.environment) {
       this.environment = "sandbox";
@@ -58,7 +70,7 @@ export class Mpesa {
     }
   }
 
-  async _getAuthToken(): Promise<string> {
+  private async _getAuthToken(): Promise<string> {
     if (Date.now() - this._lastTokenTime < 3599) {
       // cache hit, sort of :)
       return this._currentToken;
@@ -111,10 +123,16 @@ export class Mpesa {
   }
 
   public c2b(): CustomerToBusiness {
-    return new CustomerToBusiness(this);
+    return new CustomerToBusiness(this.builderCfg);
   }
 
-  public lipaNaMpesa(): STKPush {
-    return new STKPush(this);
+  public b2c(): BusinessToCustomer {
+    return new BusinessToCustomer(this.builderCfg);
+  }
+
+  public stkPush(): STKPush {
+    return new STKPush(this.builderCfg);
   }
 }
+
+export { STKPushResultWrapper };
