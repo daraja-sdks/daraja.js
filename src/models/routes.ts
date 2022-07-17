@@ -1,4 +1,3 @@
-// TODO: Add v2 urls
 export const routes = {
   production: "https://api.safaricom.co.ke",
   sandbox: "https://sandbox.safaricom.co.ke",
@@ -7,6 +6,7 @@ export const routes = {
   b2b: "/mpesa/b2b/v1/paymentrequest",
   c2bregister: "/mpesa/c2b/v1/registerurl",
   c2bsimulate: "/mpesa/c2b/v1/simulate",
+  c2bv2simulate: "/mpesa/c2b/v2/simulate",
   accountbalance: "/mpesa/accountbalance/v1/query",
   transactionstatus: "/mpesa/transactionstatus/v1/query",
   reversal: "/mpesa/reversal/v1/request",
