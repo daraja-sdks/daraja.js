@@ -4,6 +4,7 @@ import { promises } from "fs";
 import { BusinessToCustomer } from "./api/b2c";
 import { CustomerToBusiness } from "./api/c2b";
 import { STKPush, STKPushResultWrapper } from "./api/stkPush";
+import { TransactionStatus } from "./api/transactionStatus";
 import { routes } from "./models/routes";
 import {
   getProductionCert,
@@ -49,6 +50,7 @@ export class Mpesa {
     this._http = new HttpClient(this.environment);
     this.builderCfg = {
       getAuthToken: this._getAuthToken,
+      securityCredential: this.securityCredential,
       http: this._http,
       shortCode: this.globalShortCode,
     };
@@ -132,6 +134,10 @@ export class Mpesa {
 
   public stkPush(): STKPush {
     return new STKPush(this.builderCfg);
+  }
+
+  public transactionStatus(): TransactionStatus {
+    return new TransactionStatus(this.builderCfg);
   }
 }
 
