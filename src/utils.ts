@@ -19,7 +19,7 @@ export function errorAssert(condition: any, msg: string) {
 export class HttpClient {
   private baseUrl: string;
 
-  constructor(private env: string) {
+  constructor(private env = "sandbox") {
     this.env === "production"
       ? (this.baseUrl = routes.production)
       : (this.baseUrl = routes.sandbox);
