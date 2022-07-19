@@ -526,9 +526,10 @@ export interface StkPushInterface {
   /**
    * Lipa Na Mpesa Pass Key.
    */
-  passKey: string;
+  Password: string;
   TransactionType?: TransactionType;
   TransactionDesc?: string;
+  Timestamp: string;
 }
 
 export type TransactionType =
@@ -587,7 +588,8 @@ export interface StkQueryInterface {
    */
   BusinessShortCode: number;
   CheckoutRequestID: string;
-  passKey: any;
+  Password: string;
+  Timestamp: string;
 }
 
 export interface StkQueryResponseInterface {
