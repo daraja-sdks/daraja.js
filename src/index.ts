@@ -47,17 +47,11 @@ export class Mpesa {
     this.consumerKey = consumerKey;
     this.consumerSecret = consumerSecret;
     this.globalShortCode = organizationShortCode;
-    this._http = new HttpClient(this.environment);
-    this.builderCfg = {
-      getAuthToken: this._getAuthToken,
-      securityCredential: this.securityCredential,
-      http: this._http,
-      shortCode: this.globalShortCode,
-    };
 
     if (!this.environment) {
       this.environment = "sandbox";
     }
+    this._http = new HttpClient(this.environment);
 
     if (!securityCredential && !initiatorPassword) {
       throw new Error(
@@ -70,6 +64,13 @@ export class Mpesa {
     } else {
       this.securityCredential = securityCredential;
     }
+
+    this.builderCfg = {
+      getAuthToken: this._getAuthToken.bind(this),
+      securityCredential: this.securityCredential,
+      http: this._http,
+      shortCode: this.globalShortCode,
+    };
   }
 
   private async _getAuthToken(): Promise<string> {
@@ -93,6 +94,7 @@ export class Mpesa {
 
         return data.access_token;
       } catch (error) {
+        console.log(error);
         throw new Error(error);
       }
     }
