@@ -15,7 +15,7 @@ export class STKPush {
   private _phoneNumber: number;
   private _callbackURL: string;
   private _accountRef: string;
-  private _password: string;
+  private _passkey: string;
   private _description: string;
   private _transactionType: "CustomerPayBillOnline" | "CustomerBuyGoodsOnline";
   private _checkoutRequestID: string;
@@ -33,10 +33,10 @@ export class STKPush {
       .slice(0, -3);
   }
 
-  private _getPassword(): string {
-    return Buffer.from(
-      this._shortCode + this._password + this._getTimeStamp()
-    ).toString("base64");
+  private _getPassword(timestamp: string): string {
+    return Buffer.from(this._shortCode + this._passkey + timestamp).toString(
+      "base64"
+    );
   }
 
   private _debugAssert() {
@@ -47,7 +47,7 @@ export class STKPush {
     errorAssert(this._shortCode, "A shortcode must be provided");
     errorAssert(this._amount, "An amount must be provided");
     errorAssert(this._phoneNumber, "A phone number must be provided");
-    errorAssert(this._password, "Please provide your Lipa na Mpesa password");
+    errorAssert(this._passkey, "Please provide your Lipa na Mpesa passkey");
   }
 
   /**
@@ -148,6 +148,11 @@ export class STKPush {
     return this;
   }
 
+  public lipaNaMpesaPassKey(pass: string): STKPush {
+    this._passkey = pass;
+    return this;
+  }
+
   /**
    * Make the STKPush/Lipa na Mpesa online payment request
    *
@@ -159,7 +164,7 @@ export class STKPush {
 
     const app = this.config;
     const token = await app.getAuthToken();
-    const password = this._getPassword();
+    const Password = this._getPassword(this._getTimeStamp());
 
     try {
       const { data } = await app.http.post<StkPushInterface>(
@@ -171,10 +176,11 @@ export class STKPush {
           CallBackURL: this._callbackURL,
           PartyA: String(this._phoneNumber),
           PartyB: this._shortCode,
-          passKey: password,
+          Password,
           PhoneNumber: String(this._phoneNumber),
-          TransactionDesc: this._description,
+          TransactionDesc: this._description ?? "Lipa na Mpesa Online",
           TransactionType: this._transactionType,
+          Timestamp: this._getTimeStamp(),
         },
         {
           Authorization: `Bearer ${token}`,
@@ -186,7 +192,8 @@ export class STKPush {
 
       return values;
     } catch (error) {
-      console.log(error.data);
+      console.log(error);
+      console.log(Password);
       throw new Error(error);
     }
   }
@@ -198,18 +205,21 @@ export class STKPush {
    * @returns {Promise<STKQueryResponseWrapper>} A class that wraps the bare response from Daraja after querrying the status of an STKPush transaction.
    */
   public async queryStatus(): Promise<STKQueryResponseWrapper> {
-    this._debugAssert();
+    // this._debugAssert();
 
     const app = this.config;
-    const password = this._getPassword();
+    const Timestamp = this._getTimeStamp();
+    const Password = this._getPassword(Timestamp);
     const token = await app.getAuthToken();
+
     try {
       const { data } = await app.http.post<StkQueryInterface>(
         routes.stkquery,
         {
           BusinessShortCode: +this._shortCode,
           CheckoutRequestID: this._checkoutRequestID,
-          passKey: password,
+          Password,
+          Timestamp,
         },
         {
           Authorization: `Bearer ${token}`,
@@ -218,7 +228,7 @@ export class STKPush {
 
       return new STKQueryResponseWrapper(data);
     } catch (error) {
-      console.log(error.data);
+      console.log(error);
       throw new Error(error);
     }
   }
