@@ -76,7 +76,7 @@ export class TransactionStatus {
     return this;
   }
 
-  public async queryStatus(): Promise<TransactionStatusResponseWrapper> {
+  public async send(): Promise<TransactionStatusResponseWrapper> {
     // debug assert
     const app = this.config;
     const token = app.getAuthToken();
