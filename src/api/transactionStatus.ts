@@ -1,10 +1,10 @@
 import {
   TransactionStatusInterface,
   TransactionStatusResponseInterface,
-} from "models/interfaces";
-import { routes } from "models/routes";
-import { _BuilderConfig } from "utils";
-import { MpesaResponse } from "wrappers";
+} from "../models/interfaces";
+import { routes } from "../models/routes";
+import { _BuilderConfig } from "../utils";
+import { MpesaResponse } from "../wrappers";
 
 export class TransactionStatus {
   private _initiator: string;
