@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ndaba1/daraja.js.git"
+    "url": "git+https://github.com/daraja-sdks/daraja.js.git"
   },
   "keywords": [
     "node-mpesa",
@@ -25,11 +25,11 @@
     "./lib"
   ],
   "author": "Victor Ndaba <vndabam@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ndaba1/daraja.js/issues"
+    "url": "https://github.com/daraja-sdks/daraja.js/issues"
   },
-  "homepage": "https://github.com/ndaba1/daraja.js#readme",
+  "homepage": "https://daraja-sdks.github.io",
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/jest": "^28.1.6",
