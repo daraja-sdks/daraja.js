@@ -204,7 +204,7 @@ export class STKPush {
    * @description This method queries the daraja API for the status of a transaction already executed. The received response from daraja is then wrapped in the `STKQueryResponseWrapper` which contains various utility methods to access the data.
    * @returns {Promise<STKQueryResponseWrapper>} A class that wraps the bare response from Daraja after querrying the status of an STKPush transaction.
    */
-  public async query(): Promise<STKQueryResponseWrapper> {
+  public async queryStatus(): Promise<STKQueryResponseWrapper> {
     // this._debugAssert();
 
     const app = this.config;
