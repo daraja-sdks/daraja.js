@@ -3,7 +3,7 @@ import {
   TransactionStatusResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { _BuilderConfig } from "../utils";
+import { errorAssert, _BuilderConfig } from "../utils";
 import { MpesaResponse } from "../wrappers";
 
 export class TransactionStatus {
@@ -21,6 +21,18 @@ export class TransactionStatus {
     // defaults
     this._commandID = "TransactionStatusQuery";
     this._identifierType = "1";
+  }
+
+  private _debugAssert() {
+    // if no shortcode provided, check if global shortcode present
+    if (!this._shortCode) {
+      this._shortCode = String(this.config.shortCode);
+    }
+
+    errorAssert(this._shortCode, "Please provide a shortcode");
+    errorAssert(this._initiator, "Please provide an initiator name");
+    errorAssert(this._resultURL, "A result URL is required");
+    errorAssert(this._timeoutURL, "A timeout URL is required");
   }
 
   /**
@@ -79,7 +91,8 @@ export class TransactionStatus {
   }
 
   public async query(): Promise<TransactionStatusResponseWrapper> {
-    // debug assert
+    this._debugAssert();
+
     const app = this.config;
     const token = await app.getAuthToken();
 
