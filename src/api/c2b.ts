@@ -177,10 +177,12 @@ export class CustomerToBusiness {
       );
 
       const values = new C2BSimulateResponseWrapper(data);
-      return values;
+      return Promise.resolve(values);
     } catch (error) {
-      console.log(error.data);
-      throw new Error(error);
+      if (process.env.DEBUG) {
+        console.log(error);
+      }
+      return Promise.reject(error);
     }
   }
 
@@ -206,10 +208,12 @@ export class CustomerToBusiness {
       );
 
       const values = new C2BRegisterResponseWrapper(data);
-      return values;
+      return Promise.resolve(values);
     } catch (error) {
-      console.log(error.data);
-      throw new Error(error);
+      if (process.env.DEBUG) {
+        console.log(error);
+      }
+      return Promise.reject(error);
     }
   }
 }
