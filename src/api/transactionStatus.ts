@@ -22,6 +22,7 @@ export class TransactionStatus {
     this._commandID = "TransactionStatusQuery";
     this._identifierType = "1";
   }
+
   /**
    * @description Set the shortcode of the organization
    * @param  {string} code The shortcode of the organization to which the payment was made
@@ -31,6 +32,7 @@ export class TransactionStatus {
     this._shortCode = code;
     return this;
   }
+
   /**
    * @param  {string} name The name of Initiator who is making the request.
    * @returns {TransactionStatus} A reference to the TransactionStatus object for further manipulation
