@@ -154,6 +154,10 @@ export class CustomerToBusiness {
     return this;
   }
 
+  /**
+   * @description A method used to send the actual simulation request when in sandbox environment. Since C2B is customer-initiated in a production environment, you can only simulate while on sandbox.
+   * @returns {Promise<C2BSimulateResponseWrapper} returns the c2b simulate response wrapped in a class that provides utility methods to access the values.
+   */
   public async simulate(): Promise<C2BSimulateResponseWrapper> {
     // run assertions
     this._debugAssert("basic");
@@ -186,6 +190,10 @@ export class CustomerToBusiness {
     }
   }
 
+  /**
+   * @description This method is invoked when one intends to register the configured validation and confirmation urls
+   * @returns {Promise<C2BRegisterResponseWrapper} A promise that resolves to the c2b register response wrapper if the request completes with no errors whatsoever.
+   */
   public async registerUrls(): Promise<C2BRegisterResponseWrapper> {
     // run assertions
     this._debugAssert("full");
