@@ -79,7 +79,7 @@ export class TransactionStatus {
   public async query(): Promise<TransactionStatusResponseWrapper> {
     // debug assert
     const app = this.config;
-    const token = app.getAuthToken();
+    const token = await app.getAuthToken();
 
     const { data } = await app.http.post<TransactionStatusInterface>(
       routes.transactionstatus,
