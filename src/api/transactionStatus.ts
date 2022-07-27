@@ -81,26 +81,33 @@ export class TransactionStatus {
     const app = this.config;
     const token = await app.getAuthToken();
 
-    const { data } = await app.http.post<TransactionStatusInterface>(
-      routes.transactionstatus,
-      {
-        PartyA: this._shortCode,
-        IdentifierType: this._identifierType,
-        Initiator: this._initiator,
-        QueueTimeOutURL: this._timeoutURL,
-        ResultURL: this._resultURL,
-        TransactionID: this._transactionID,
-        CommandID: this._commandID,
-        Occasion: this._occassion ?? "Transaction Status",
-        Remarks: this._remarks ?? "Transaction Status",
-      },
-      {
-        Authorization: `Bearer ${token}`,
-      }
-    );
+    try {
+      const { data } = await app.http.post<TransactionStatusInterface>(
+        routes.transactionstatus,
+        {
+          PartyA: this._shortCode,
+          IdentifierType: this._identifierType,
+          Initiator: this._initiator,
+          QueueTimeOutURL: this._timeoutURL,
+          ResultURL: this._resultURL,
+          TransactionID: this._transactionID,
+          CommandID: this._commandID,
+          Occasion: this._occassion ?? "Transaction Status",
+          Remarks: this._remarks ?? "Transaction Status",
+        },
+        {
+          Authorization: `Bearer ${token}`,
+        }
+      );
 
-    const values = new TransactionStatusResponseWrapper(data);
-    return values;
+      const values = new TransactionStatusResponseWrapper(data);
+      return Promise.resolve(values);
+    } catch (error) {
+      if (process.env.DEBUG) {
+        console.log(error);
+      }
+      return Promise.reject(error);
+    }
   }
 }
 
