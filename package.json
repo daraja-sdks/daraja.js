@@ -6,9 +6,10 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
     "fmt": "prettier --write ./**/*.{js,ts}",
-    "check:fmt": "prettier --check ./**/*.{js,ts}"
+    "fmt:check": "prettier --check ./**/*.{js,ts}"
   },
   "repository": {
     "type": "git",
