@@ -1,0 +1,56 @@
+name: daraja.js-ci-workflow
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        node-version: [14.x, 16.x, 18.x]
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup node.js
+        uses: actions/setup-node
+        with:
+          node-version: ${{matrix.node-version}}
+
+      - name: Cache deps on unix
+        if: ${{ runner.os}} != "windows"
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles(**/package-lock.json) }}
+          restore-keys: |
+            ${{runner.os}}-node-
+
+      - name: Cache deps on windows
+        if: ${{runner.os}} == "windows"
+        uses: actions/cache@v2
+        with:
+          path: ~\AppData\Roaming\npm-cache
+          key: ${{ runner.os }}-node-${{ hashFiles(**/package-lock.json) }}
+          restore-keys: |
+            ${{runner.os}}-node-
+
+      - run: npm ci
+      - run: npm fmt:check
+      - run: npm test -- --coverage
+        env:
+          CI: true
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact
+        with:
+          name: coverage
+          path: coverage
