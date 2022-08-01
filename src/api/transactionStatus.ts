@@ -21,6 +21,7 @@ export class TransactionStatus {
     // defaults
     this._commandID = "TransactionStatusQuery";
     this._identifierType = "1";
+    this._initiator = "testapi";
   }
 
   private _debugAssert() {
@@ -51,6 +52,15 @@ export class TransactionStatus {
    */
   public initiator(name: string): TransactionStatus {
     this._initiator = name;
+    return this;
+  }
+
+  /**
+   * @param  {string} id The transaction ID of the transaction to be queried
+   * @returns {TransactionStatus} A reference to the TransactionStatus object for further manipulation
+   */
+  public transactionID(id: string): TransactionStatus {
+    this._transactionID = id;
     return this;
   }
 
@@ -90,7 +100,7 @@ export class TransactionStatus {
     return this;
   }
 
-  public async query(): Promise<TransactionStatusResponseWrapper> {
+  public async queryStatus(): Promise<TransactionStatusResponseWrapper> {
     this._debugAssert();
 
     const app = this.config;
@@ -101,12 +111,13 @@ export class TransactionStatus {
         routes.transactionstatus,
         {
           PartyA: this._shortCode,
-          IdentifierType: this._identifierType,
-          Initiator: this._initiator,
+          IdentifierType: this._identifierType ?? "1",
+          Initiator: this._initiator ?? "testapi",
+          SecurityCredential: this.config.securityCredential,
           QueueTimeOutURL: this._timeoutURL,
           ResultURL: this._resultURL,
           TransactionID: this._transactionID,
-          CommandID: this._commandID,
+          CommandID: this._commandID ?? "TransactionStatusQuery",
           Occasion: this._occassion ?? "Transaction Status",
           Remarks: this._remarks ?? "Transaction Status",
         },
