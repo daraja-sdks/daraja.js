@@ -16,10 +16,10 @@ import {
 interface MpesaCredentials {
   consumerKey: string;
   consumerSecret: string;
-  securityCredential: string;
-  initiatorPassword: string;
-  certificatePath: string;
-  organizationShortCode: number;
+  securityCredential?: string;
+  initiatorPassword?: string;
+  certificatePath?: string;
+  organizationShortCode?: number;
 }
 
 export class Mpesa {
