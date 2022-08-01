@@ -44,7 +44,7 @@ jobs:
             ${{runner.os}}-node-
 
       - run: npm ci
-      - run: npm fmt:check
+      - run: npm run fmt:check
       - run: npm test -- --coverage
         env:
           CI: true
