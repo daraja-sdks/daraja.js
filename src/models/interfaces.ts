@@ -1,5 +1,5 @@
 export interface B2CInterface {
-  Initiator: string;
+  InitiatorName: string;
   /**
    * The amount to be transacted.
    */
@@ -51,6 +51,7 @@ export interface B2CInterface {
   CommandID: CommandID;
   Occasion?: string;
   Remarks?: string;
+  SecurityCredential: string;
 }
 
 export type CommandID =
