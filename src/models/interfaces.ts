@@ -190,6 +190,7 @@ export type IdentifierType = "1" | "2" | "4";
 
 export interface AccountBalanceInterface {
   Initiator: string;
+  SecurityCredential: string;
   /**
    * The Party sending the funds. Either msisdn or business short code
    */
