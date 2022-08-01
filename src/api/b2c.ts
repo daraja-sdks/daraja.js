@@ -1,6 +1,11 @@
-import { B2CInterface, CommandID } from "../models/interfaces";
+import { MpesaResponse } from "wrappers";
+import {
+  B2CInterface,
+  B2CResponseInterface,
+  CommandID,
+} from "../models/interfaces";
 import { routes } from "../models/routes";
-import { _BuilderConfig } from "../utils";
+import { errorAssert, _BuilderConfig } from "../utils";
 
 export class BusinessToCustomer {
   private _initiator: string;
@@ -14,6 +19,18 @@ export class BusinessToCustomer {
   private _occassion: string;
 
   constructor(private config: _BuilderConfig) {}
+
+  private _debugAssert() {
+    if (!this._shortCode) {
+      this._shortCode = String(this.config.shortCode);
+    }
+
+    errorAssert(this._shortCode, "Shortcode is required");
+    errorAssert(this._phoneNumber, "Phone number is required");
+    errorAssert(this._amount, "Amount is required");
+    errorAssert(this._timeoutURL, "Timeout URL is required");
+    errorAssert(this._resultURL, "Result URL is required");
+  }
 
   /**
    * Business/Organization shortcode
@@ -122,7 +139,9 @@ export class BusinessToCustomer {
     return this;
   }
 
-  public async makePayment() {
+  public async send(): Promise<B2CResponseWrapper> {
+    this._debugAssert();
+
     const app = this.config;
     const token = await app.getAuthToken();
 
@@ -131,8 +150,9 @@ export class BusinessToCustomer {
         routes.b2c,
         {
           Amount: this._amount,
-          CommandID: this._commandID,
-          Initiator: this._initiator,
+          CommandID: this._commandID ?? "SalaryPayment",
+          InitiatorName: this._initiator ?? "testapi",
+          SecurityCredential: this.config.securityCredential,
           PartyA: this._shortCode,
           PartyB: String(this._phoneNumber),
           QueueTimeOutURL: this._timeoutURL,
@@ -145,11 +165,40 @@ export class BusinessToCustomer {
         }
       );
 
-      console.log(data);
-      return data;
+      const values = new B2CResponseWrapper(data);
+      return Promise.resolve(values);
     } catch (error) {
-      console.log(error.data);
-      throw new Error(error);
+      if (process.env.DEBUG) {
+        console.log(error);
+      }
+      Promise.reject(error);
     }
+  }
+}
+
+class B2CResponseWrapper implements MpesaResponse {
+  constructor(private data: B2CResponseInterface) {}
+
+  public isOkay(): boolean {
+    return (
+      this.data.ResponseCode === "0" &&
+      this.data.ResponseDescription.toLowerCase().includes("success")
+    );
+  }
+
+  public getResponseCode(): string {
+    return this.data.ResponseCode;
+  }
+
+  public getResponseDescription(): string {
+    return this.data.ResponseDescription;
+  }
+
+  public getConversationID(): string {
+    return this.data.ConversationID;
+  }
+
+  public getOriginatorConversationID(): string {
+    return this.data.OriginatorConversationID;
   }
 }
