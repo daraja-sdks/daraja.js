@@ -170,7 +170,7 @@ export class STKPush {
       const { data } = await app.http.post<StkPushInterface>(
         routes.stkpush,
         {
-          AccountReference: this._accountRef,
+          AccountReference: this._accountRef ?? "CompanyXLTD",
           Amount: this._amount,
           BusinessShortCode: +this._shortCode,
           CallBackURL: this._callbackURL,
