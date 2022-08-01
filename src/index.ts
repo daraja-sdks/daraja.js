@@ -4,6 +4,7 @@ import { promises } from "fs";
 import { AccountBalance } from "./api/accountBalance";
 import { BusinessToCustomer } from "./api/b2c";
 import { CustomerToBusiness } from "./api/c2b";
+import { Reversal } from "./api/reversal";
 import { STKPush, STKPushResultWrapper } from "./api/stkPush";
 import { TransactionStatus } from "./api/transactionStatus";
 import { routes } from "./models/routes";
@@ -149,6 +150,10 @@ export class Mpesa {
 
   public accountBalance(): AccountBalance {
     return new AccountBalance(this.builderCfg);
+  }
+
+  public reversal(): Reversal {
+    return new Reversal(this.builderCfg);
   }
 }
 
