@@ -1,6 +1,7 @@
 import { RSA_PKCS1_PADDING } from "constants";
 import { publicEncrypt } from "crypto";
 import { promises } from "fs";
+import { AccountBalance } from "./api/accountBalance";
 import { BusinessToCustomer } from "./api/b2c";
 import { CustomerToBusiness } from "./api/c2b";
 import { STKPush, STKPushResultWrapper } from "./api/stkPush";
@@ -144,6 +145,10 @@ export class Mpesa {
 
   public transactionStatus(): TransactionStatus {
     return new TransactionStatus(this.builderCfg);
+  }
+
+  public accountBalance(): AccountBalance {
+    return new AccountBalance(this.builderCfg);
   }
 }
 
