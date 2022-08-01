@@ -28,11 +28,13 @@ export class CustomerToBusiness {
       this._shortCode = String(this.config.shortCode);
     }
 
-    errorAssert(this._amount, "An amount must be set for C2B to function");
-    errorAssert(
-      this._phoneNumber,
-      "A Phone Number must be set for C2B to function"
-    );
+    if (level === "basic") {
+      errorAssert(this._amount, "An amount must be set for C2B to function");
+      errorAssert(
+        this._phoneNumber,
+        "A Phone Number must be set for C2B to function"
+      );
+    }
     errorAssert(this._shortCode, "Short code must be set for C2B to function");
 
     if (level === "full") {
@@ -128,7 +130,7 @@ export class CustomerToBusiness {
    * @param  {string} url The Callback URL to be invoked after a payment is made
    * @returns {CustomerToBusiness} Returns a reference to the C2B object for further manipulation
    */
-  public callbackUrl(url: string): CustomerToBusiness {
+  public callbackURL(url: string): CustomerToBusiness {
     this._callbackUrl = url;
     return this;
   }
@@ -140,7 +142,7 @@ export class CustomerToBusiness {
    * @param  {string} url The custom confirmation URL for an organization
    * @returns {CustomerToBusiness} Returns a reference to the C2B object for further manipulation
    */
-  public confirmationUrl(url: string): CustomerToBusiness {
+  public confirmationURL(url: string): CustomerToBusiness {
     this._confirmationUrl = url;
     return this;
   }
@@ -149,7 +151,7 @@ export class CustomerToBusiness {
    * @param  {string} url This is the URL that receives the validation request from API upon payment submission
    * @returns {CustomerToBusiness} Returns a reference to the C2B object for further manipulation
    */
-  public validationUrl(url: string): CustomerToBusiness {
+  public validationURL(url: string): CustomerToBusiness {
     this._validationUrl = url;
     return this;
   }
@@ -194,7 +196,7 @@ export class CustomerToBusiness {
    * @description This method is invoked when one intends to register the configured validation and confirmation urls
    * @returns {Promise<C2BRegisterResponseWrapper} A promise that resolves to the c2b register response wrapper if the request completes with no errors whatsoever.
    */
-  public async registerUrls(): Promise<C2BRegisterResponseWrapper> {
+  public async registerURLS(): Promise<C2BRegisterResponseWrapper> {
     // run assertions
     this._debugAssert("full");
 
