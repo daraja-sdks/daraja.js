@@ -291,6 +291,7 @@ export interface AccountBalanceResponseInterface {
 
 export interface TransactionStatusInterface {
   Initiator: string;
+  SecurityCredential: string;
   TransactionID: string;
   /**
    * The Party sending the funds. Either msisdn or business short code
