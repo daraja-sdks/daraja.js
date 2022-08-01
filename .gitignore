@@ -107,4 +107,3 @@ dist
 todo.*
 lib/
 target/
-yarn.lock
