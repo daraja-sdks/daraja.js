@@ -192,8 +192,10 @@ export class STKPush {
 
       return values;
     } catch (error) {
-      console.log(error);
-      console.log(Password);
+      if (process.env.DEBUG) {
+        console.log(error);
+        console.log(Password);
+      }
       throw new Error(error);
     }
   }
@@ -228,7 +230,9 @@ export class STKPush {
 
       return new STKQueryResponseWrapper(data);
     } catch (error) {
-      console.log(error);
+      if (process.env.DEBUG) {
+        console.log(error);
+      }
       throw new Error(error);
     }
   }
