@@ -53,6 +53,10 @@ export class Mpesa {
     }
     this._http = new HttpClient(this.environment);
 
+    if (!initiatorPassword && this.environment === "sandbox") {
+      this.initiatorPassword = "Safaricom999!*!";
+    }
+
     if (!securityCredential && !initiatorPassword) {
       throw new Error(
         "You must provide either the security credential or initiator password. Both cannot be null"
