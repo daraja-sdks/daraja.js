@@ -394,12 +394,10 @@ export interface TransactionStatusResponseInterface {
   ResponseDescription: string;
 }
 export interface ReversalInterface {
-  Initiator: string;
-  TransactionID: string;
-  /**
-   * The amount to be transacted.
-   */
   Amount: number;
+  Initiator: string;
+  SecurityCredential: string;
+  TransactionID: string;
   ReceiverParty: string;
   /**
    * This is a publicly accessible url where mpesa will send the response to. Must accept POST requests
