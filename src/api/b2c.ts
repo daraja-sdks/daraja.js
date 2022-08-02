@@ -5,7 +5,7 @@ import {
   CommandID,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert, _BuilderConfig } from "../utils";
+import { errorAssert, handleError, _BuilderConfig } from "../utils";
 
 export class BusinessToCustomer {
   private _initiator: string;
@@ -168,16 +168,14 @@ export class BusinessToCustomer {
       const values = new B2CResponseWrapper(data);
       return Promise.resolve(values);
     } catch (error) {
-      if (process.env.DEBUG) {
-        console.log(error);
-      }
-      Promise.reject(error);
+      return handleError(error);
     }
   }
 }
 
 class B2CResponseWrapper implements MpesaResponse {
-  constructor(private data: B2CResponseInterface) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(public data: B2CResponseInterface | any) {}
 
   public isOkay(): boolean {
     return (
@@ -192,13 +190,5 @@ class B2CResponseWrapper implements MpesaResponse {
 
   public getResponseDescription(): string {
     return this.data.ResponseDescription;
-  }
-
-  public getConversationID(): string {
-    return this.data.ConversationID;
-  }
-
-  public getOriginatorConversationID(): string {
-    return this.data.OriginatorConversationID;
   }
 }

@@ -3,7 +3,7 @@ import {
   ReversalResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert, _BuilderConfig } from "../utils";
+import { errorAssert, handleError, _BuilderConfig } from "../utils";
 
 export class Reversal {
   private _partyA: string;
@@ -144,10 +144,7 @@ export class Reversal {
       const values = new ReversalResponseWrapper(data);
       return Promise.resolve(values);
     } catch (error) {
-      if (process.env.DEBUG) {
-        console.log(error);
-      }
-      return Promise.reject(error);
+      return handleError(error);
     }
   }
 }

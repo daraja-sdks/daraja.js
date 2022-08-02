@@ -3,7 +3,7 @@ import {
   TransactionStatusResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert, _BuilderConfig } from "../utils";
+import { errorAssert, handleError, _BuilderConfig } from "../utils";
 import { MpesaResponse } from "../wrappers";
 
 export class TransactionStatus {
@@ -129,16 +129,14 @@ export class TransactionStatus {
       const values = new TransactionStatusResponseWrapper(data);
       return Promise.resolve(values);
     } catch (error) {
-      if (process.env.DEBUG) {
-        console.log(error);
-      }
-      return Promise.reject(error);
+      return handleError(error);
     }
   }
 }
 
 class TransactionStatusResponseWrapper implements MpesaResponse {
-  constructor(public data: TransactionStatusResponseInterface) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(public data: TransactionStatusResponseInterface | any) {}
 
   public isOkay(): boolean {
     return this.data.ResponseCode === "0";

@@ -6,7 +6,7 @@ import {
   StkQueryResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert, _BuilderConfig } from "../utils";
+import { errorAssert, handleError, _BuilderConfig } from "../utils";
 import { MpesaResponse } from "../wrappers";
 
 export class STKPush {
@@ -192,11 +192,7 @@ export class STKPush {
 
       return values;
     } catch (error) {
-      if (process.env.DEBUG) {
-        console.log(error);
-        console.log(Password);
-      }
-      throw new Error(error);
+      return handleError(error);
     }
   }
 
@@ -230,17 +226,15 @@ export class STKPush {
 
       return new STKQueryResponseWrapper(data);
     } catch (error) {
-      if (process.env.DEBUG) {
-        console.log(error);
-      }
-      throw new Error(error);
+      return handleError(error);
     }
   }
 }
 
 // Wraps the response from Daraja after making payment request
 class STKPushResponseWrapper implements MpesaResponse {
-  constructor(public data: StkPushResponseInterface) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(public data: StkPushResponseInterface | any) {}
 
   public isOkay(): boolean {
     return this.data.ResponseCode === "0";
@@ -264,7 +258,8 @@ class STKPushResponseWrapper implements MpesaResponse {
 
 // Wraps the response from Daraja after making status query request
 class STKQueryResponseWrapper implements MpesaResponse {
-  constructor(public data: StkQueryResponseInterface) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(public data: StkQueryResponseInterface | any) {}
 
   public isOkay(): boolean {
     return (this.data.ResultCode && this.data.ResponseCode) === "0";

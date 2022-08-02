@@ -3,7 +3,7 @@ import {
   AccountBalanceResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert, _BuilderConfig } from "../utils";
+import { errorAssert, handleError, _BuilderConfig } from "../utils";
 
 export class AccountBalance {
   private _partyA: string;
@@ -111,16 +111,14 @@ export class AccountBalance {
       const values = new AccountBalanceResponseWrapper(data);
       return Promise.resolve(values);
     } catch (error) {
-      if (process.env.DEBUG) {
-        console.log(error);
-      }
-      return Promise.reject(error);
+      return handleError(error);
     }
   }
 }
 
 class AccountBalanceResponseWrapper {
-  constructor(private data: AccountBalanceResponseInterface) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(public data: AccountBalanceResponseInterface | any) {}
 
   public get ResponseCode(): string {
     return this.data.ResponseCode;

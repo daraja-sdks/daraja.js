@@ -4,7 +4,7 @@ import {
   C2BSimulateResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert, _BuilderConfig } from "../utils";
+import { errorAssert, handleError, _BuilderConfig } from "../utils";
 
 export class CustomerToBusiness {
   private _amount: number;
@@ -185,10 +185,7 @@ export class CustomerToBusiness {
       const values = new C2BSimulateResponseWrapper(data);
       return Promise.resolve(values);
     } catch (error) {
-      if (process.env.DEBUG) {
-        console.log(error);
-      }
-      return Promise.reject(error);
+      return handleError(error);
     }
   }
 
@@ -220,16 +217,14 @@ export class CustomerToBusiness {
       const values = new C2BRegisterResponseWrapper(data);
       return Promise.resolve(values);
     } catch (error) {
-      if (process.env.DEBUG) {
-        console.log(error);
-      }
-      return Promise.reject(error);
+      return handleError(error);
     }
   }
 }
 
 class C2BSimulateResponseWrapper {
-  constructor(public data: C2BSimulateResponseInterface) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(public data: C2BSimulateResponseInterface | any) {}
 
   public isOkay(): boolean {
     const desc = this.data.ResponseDescription;
@@ -239,18 +234,11 @@ class C2BSimulateResponseWrapper {
   public getResponseDescription(): string {
     return this.data.ResponseDescription;
   }
-
-  public getConversationID(): string {
-    return this.data.ConversationID;
-  }
-
-  public getOriginatorConversationID(): string {
-    return this.data.OriginatorCoversationID;
-  }
 }
 
 class C2BRegisterResponseWrapper {
-  constructor(public data: C2BRegisterResponseInterface) {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(public data: C2BRegisterResponseInterface | any) {}
 
   public isOkay(): boolean {
     return (
@@ -265,9 +253,5 @@ class C2BRegisterResponseWrapper {
 
   public getResponseCode(): string {
     return this.data.ResponseCode;
-  }
-
-  public getOriginatorConversationID(): string {
-    return this.data.OriginatorCoversationID;
   }
 }
