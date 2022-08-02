@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { routes } from "./models/routes";
 
 export interface _BuilderConfig {
@@ -6,6 +6,39 @@ export interface _BuilderConfig {
   shortCode: number;
   securityCredential: string;
   getAuthToken(): Promise<string>;
+}
+
+export function handleError(error: AxiosError) {
+  const stub = {
+    isOkay: () => true,
+    data: {},
+    ResponseDescription: "",
+    ResponseCode: "",
+    getResponseDescription: () => "",
+    getResponseCode: () => "",
+    getResultCode: () => "",
+    getResultDescription: () => "",
+    getTransactionID: () => "",
+  };
+
+  if (process.env.DEBUG) {
+    console.log(error);
+  }
+
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    if (error.response.status === 500) {
+      return Promise.resolve(stub);
+    }
+  } else if (error.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    return Promise.resolve(stub);
+  }
+
+  return Promise.reject(error);
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
