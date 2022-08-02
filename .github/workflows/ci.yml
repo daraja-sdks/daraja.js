@@ -16,6 +16,10 @@ jobs:
           - macos-latest
         node-version: [14.x, 16.x, 18.x]
     runs-on: ${{matrix.os}}
+    env:
+      APP_KEY: ${{secrets.APP_KEY}}
+      APP_SECRET: ${{secrets.APP_SECRET}}
+      LNM_PASSKEY: ${{secrets.LNM_PASSKEY}}
 
     steps:
       - uses: actions/checkout@v2
@@ -42,6 +46,9 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{runner.os}}-node-
+
+      - name: Upgrade NPM
+        run: npm install -g npm
 
       - run: npm ci
       - run: npm run fmt:check
