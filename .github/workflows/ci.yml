@@ -15,7 +15,7 @@ jobs:
           - windows-latest
           - macos-latest
         node-version: [14.x, 16.x, 18.x]
-    runs-on: ${{matrix.os}}
+    runs-on: ubuntu-latest
     env:
       APP_KEY: ${{secrets.APP_KEY}}
       APP_SECRET: ${{secrets.APP_SECRET}}
@@ -28,7 +28,7 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{matrix.node-version}}
+          node-version: 14.x
 
       - name: Cache deps on unix
         if: ${{ runner.os}} != "windows"
