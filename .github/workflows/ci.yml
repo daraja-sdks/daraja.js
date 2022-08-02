@@ -53,6 +53,7 @@ jobs:
 
       - run: npm ci
       - run: npm run fmt:check
+        if: ${{runner.os}} != "windows"
       - run: npm test -- --coverage
         env:
           CI: true
