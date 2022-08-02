@@ -39,7 +39,7 @@ describe("basic endpoints tests", () => {
     expect(res.isOkay()).toBe(true);
   });
 
-  it.skip("tests c2b register urls", async () => {
+  it("tests c2b register urls", async () => {
     const res = await app
       .c2b()
       .shortCode("600998")
