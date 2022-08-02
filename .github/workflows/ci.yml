@@ -31,7 +31,7 @@ jobs:
           node-version: ${{matrix.node-version}}
 
       - name: Cache deps on unix
-        if: ${{ runner.os}} != "windows"
+        if: runner.os != "windows"
         uses: actions/cache@v2
         with:
           path: ~/.npm
@@ -40,7 +40,7 @@ jobs:
             ${{runner.os}}-node-
 
       - name: Cache deps on windows
-        if: ${{runner.os}} == "windows"
+        if: runner.os == "windows"
         uses: actions/cache@v2
         with:
           path: ~\AppData\Roaming\npm-cache
@@ -53,7 +53,7 @@ jobs:
 
       - run: npm ci
       - run: npm run fmt:check
-        if: ${{runner.os}} != "windows"
+        if: runner.os != "windows"
       - run: npm test -- --coverage
         env:
           CI: true
