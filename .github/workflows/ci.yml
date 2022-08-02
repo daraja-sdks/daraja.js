@@ -20,6 +20,7 @@ jobs:
       APP_KEY: ${{secrets.APP_KEY}}
       APP_SECRET: ${{secrets.APP_SECRET}}
       LNM_PASSKEY: ${{secrets.LNM_PASSKEY}}
+      DEBUG: true
 
     steps:
       - uses: actions/checkout@v2
