@@ -190,7 +190,7 @@ export class STKPush {
       const values = new STKPushResponseWrapper(data);
       this._checkoutRequestID = values.getTransactionID();
 
-      return values;
+      return Promise.resolve(values);
     } catch (error) {
       return handleError(error);
     }
@@ -224,7 +224,7 @@ export class STKPush {
         }
       );
 
-      return new STKQueryResponseWrapper(data);
+      return Promise.resolve(new STKQueryResponseWrapper(data));
     } catch (error) {
       return handleError(error);
     }
