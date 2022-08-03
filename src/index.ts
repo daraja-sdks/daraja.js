@@ -14,6 +14,7 @@ import {
   HttpClient,
   _BuilderConfig,
 } from "./utils";
+import { ValidationRequestWrapper } from "./wrappers";
 
 interface MpesaCredentials {
   consumerKey: string;
@@ -182,4 +183,4 @@ export class Mpesa {
   }
 }
 
-export { STKPushResultWrapper };
+export { STKPushResultWrapper, ValidationRequestWrapper };
