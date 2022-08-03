@@ -44,7 +44,12 @@ export function handleError(error: AxiosError) {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function errorAssert(condition: any, msg: string) {
   if (!condition) {
-    console.log("\n", "Error:", msg, "\n");
+    const tmpl = `
+If you are unsure about any fields that are required or need clarification,
+Refer to the documentation at:
+"https://daraja-sdks.github.io/en/impl/node"
+    `;
+    console.log("\n", "Error:", msg, "\n", tmpl);
     throw new Error(msg);
   }
 }
