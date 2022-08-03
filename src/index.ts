@@ -100,7 +100,7 @@ export class Mpesa {
 
         return data.access_token;
       } catch (error) {
-        console.log(error);
+        process.env.DEBUG && console.log(error);
         throw new Error(error);
       }
     }
@@ -132,6 +132,31 @@ export class Mpesa {
     ).toString("base64");
   }
 
+  /**
+   * Customer To Business
+   *
+   * @description This method returns an instance of the `CustomerToBusiness` class to which you attach methods in a builder-style interface.
+   * @example
+   * let app = new Mpesa({...}) // Pass credentials here
+   *
+   * // c2b simulate example
+   * const c2b = await app
+   *   .c2b()
+   *   .shortCode("600998")
+   *   .accountNumber("Bill payment")
+   *   .amount(1)
+   *   .phoneNumber(254708374149)
+   *   .simulate(); // This method builds the request and invokes the daraja api, returning the response asynchronously.
+   *
+   * // c2b resgiter URLs example
+   * const res = await app
+   *  .c2b()
+   *  .shortCode("600998")
+   *  .confirmationURL("https://example.com/callback")
+   *  .validationURL("https://example.com/callback")
+   *  .callbackURL("https://example.com/callback")
+   *  .registerURLS(); // Builds the request and invokes the api, returning the response wrapped in a utility class
+   */
   public c2b(): CustomerToBusiness {
     return new CustomerToBusiness(this.builderCfg);
   }
