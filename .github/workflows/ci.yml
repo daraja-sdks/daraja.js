@@ -8,14 +8,7 @@ on:
 
 jobs:
   test:
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
-        node-version: [14.x, 16.x, 18.x]
-    runs-on: ${{matrix.os}}
+    runs-on: ubuntu-latest
     env:
       APP_KEY: ${{secrets.APP_KEY}}
       APP_SECRET: ${{secrets.APP_SECRET}}
@@ -28,22 +21,12 @@ jobs:
       - name: Setup node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{matrix.node-version}}
+          node-version: 16.x
 
-      - name: Cache deps on unix
-        if: runner.os != 'windows'
+      - name: Cache dependencies
         uses: actions/cache@v2
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{runner.os}}-node-
-
-      - name: Cache deps on windows
-        if: runner.os == 'windows'
-        uses: actions/cache@v2
-        with:
-          path: ~\AppData\Roaming\npm-cache
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{runner.os}}-node-
@@ -53,10 +36,20 @@ jobs:
 
       - run: npm ci
       - run: npm run fmt:check
-        if: runner.os != 'windows'
       - run: npm test -- --coverage
         env:
           CI: true
+
+      - name: Generate a release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - name: Upload coverage reports to codecov
+        run: npx codecov
+        env:
+          CODECOV_TOKEN: ${{secrets.CODECOV_TOKEN}}
 
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v1
