@@ -1,3 +1,8 @@
+<p align="center">
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/daraja-sdks/daraja.js/daraja.js-ci-workflow?label=CI&logo=github-actions)
+![Codecov](https://img.shields.io/codecov/c/gh/ndaba1/daraja.js)
+</p>
+
 # Daraja.js
 
 A node.js wrapper for seamless integration with Mpesa's Daraja API. This library provides a builder-style interface to enhance the ease of use.
