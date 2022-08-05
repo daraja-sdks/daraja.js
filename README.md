@@ -1,7 +1,7 @@
-<p align="center">
+
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/daraja-sdks/daraja.js/daraja.js-ci-workflow?label=CI&logo=github-actions)
 ![Codecov](https://img.shields.io/codecov/c/gh/ndaba1/daraja.js)
-</p>
+
 
 # Daraja.js
 
