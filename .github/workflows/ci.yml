@@ -39,6 +39,7 @@ jobs:
       - run: npm test -- --coverage
         env:
           CI: true
+      - run: npm run build
 
       - name: Generate a release
         run: npx semantic-release
