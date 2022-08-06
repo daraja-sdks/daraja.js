@@ -183,6 +183,7 @@ export class Mpesa {
   public b2c(): BusinessToCustomer {
     return new BusinessToCustomer(this.builderCfg);
   }
+
   /**
    * Lipa Na Mpesa Online / STK Push / Mpesa Express
    * @description This method is used to construct an instance of the `STKPush` class by passing various credentials after which you can either send and stk push request or query the status of an already sent transaction
@@ -250,6 +251,7 @@ export class Mpesa {
   public accountBalance(): AccountBalance {
     return new AccountBalance(this.builderCfg);
   }
+
   /**
    * Reversal API
    *
