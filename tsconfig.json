@@ -7,16 +7,11 @@
     "declaration": true,
     "removeComments": false,
     "allowSyntheticDefaultImports": true,
-    "outDir": "lib",
+    "outDir": "dist",
     "baseUrl": "src",
     "sourceMap": true,
     "lib": ["ES6"]
   },
-  "include": [
-    ".eslintrc.js",
-    "jest.config.js",
-    "src/**/*.ts",
-    "__tests__/**/*.ts"
-  ],
+  "include": [".eslintrc.js", "src/**/*.ts"],
   "exclude": ["node_modules"]
 }
