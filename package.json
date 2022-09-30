@@ -2,7 +2,7 @@
   "name": "daraja.js",
   "version": "0.1.0",
   "description": "A wrapper for seamless integration with Mpesa's Daraja API",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "jest",
@@ -23,7 +23,9 @@
     "mpesa-api"
   ],
   "files": [
-    "./lib"
+    "./dist",
+    "README.md",
+    "LICENSE"
   ],
   "author": "Victor Ndaba <vndabam@gmail.com>",
   "license": "MIT",
