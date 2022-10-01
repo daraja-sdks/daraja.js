@@ -1,3 +1,4 @@
 .eslintrc.js
 todo.*
 lib/
+dist/
