@@ -45,15 +45,11 @@ export class Mpesa {
       certificatePath,
       organizationShortCode,
     }: MpesaCredentials,
-    private environment: string
+    private environment = "sandbox"
   ) {
     this.consumerKey = consumerKey;
     this.consumerSecret = consumerSecret;
     this.globalShortCode = organizationShortCode;
-
-    if (!this.environment) {
-      this.environment = "sandbox";
-    }
     this._http = new HttpClient(this.environment);
 
     if (!initiatorPassword && this.environment === "sandbox") {
