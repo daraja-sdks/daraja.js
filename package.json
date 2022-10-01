@@ -9,7 +9,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "fmt": "prettier --write ./**/*.{js,ts}",
-    "fmt:check": "prettier --check ./**/*.{js,ts}"
+    "fmt:check": "prettier --check ./**/*.{js,ts}",
+    "clean": "rm -rf dist coverage null",
+    "semantic-release": "npx semantic-release"
   },
   "repository": {
     "type": "git",
