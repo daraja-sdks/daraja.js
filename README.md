@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/daraja-sdks/daraja.js/daraja.js-ci-workflow?logo=github">
+<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/daraja-sdks/daraja.js/ci.yml?logo=github&branch=main">
 <img alt="Codecov" src="https://img.shields.io/codecov/c/gh/ndaba1/daraja.js?logo=codecov">
 <img alt="npm" src="https://img.shields.io/npm/dw/daraja.js">
 <img alt="Discord" src="https://img.shields.io/discord/998532562706243606?logo=discord">
