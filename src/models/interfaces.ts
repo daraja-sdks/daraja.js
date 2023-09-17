@@ -445,7 +445,7 @@ export interface ReversalInterface {
    *
    * `4` - Shortcode
    */
-  RecieverIdentifierType?: "1" | "2" | "4";
+  RecieverIdentifierType?: "1" | "2" | "4" | "11";
   Remarks?: string;
   Occasion?: string;
 }
