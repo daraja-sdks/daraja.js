@@ -16,30 +16,42 @@ jobs:
       DEBUG: true
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
         with:
-          node-version: 16.x
+          version: 8
 
-      - name: Cache dependencies
-        uses: actions/cache@v2
+      - uses: actions/setup-node@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          node-version: "18.x"
+          cache: "pnpm"
+
+      - name: Configure pnpm
+        shell: bash
+        run: |
+          pnpm config set git-checks false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      # Cache pnpm output
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{runner.os}}-node-
+            ${{ runner.os }}-pnpm-store-
 
-      - name: Upgrade NPM
-        run: npm install -g npm
-
-      - run: npm ci
-      - run: npm run fmt:check
-      - run: npm test -- --coverage
+      - run: pnpm install
+      - run: pnpm fmt:check
+      - run: pnpm test -- --coverage
         env:
           CI: true
-      - run: npm run build
+      - run: pnpm build
 
       - name: Generate a release
         run: npx semantic-release

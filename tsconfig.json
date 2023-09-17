@@ -12,6 +12,6 @@
     "sourceMap": true,
     "lib": ["ES6"]
   },
-  "include": [".eslintrc.js", "src/**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }

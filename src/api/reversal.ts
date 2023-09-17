@@ -3,7 +3,7 @@ import {
   ReversalResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert, handleError, _BuilderConfig } from "../utils";
+import { _BuilderConfig, errorAssert, handleError } from "../utils";
 
 export class Reversal {
   private _partyA: string;
@@ -14,8 +14,11 @@ export class Reversal {
   private _transactionID: string;
   private _occasion: string;
   private _amount: number;
+  private _receiverIdentifierType: ReversalInterface["RecieverIdentifierType"];
 
-  constructor(private config: _BuilderConfig) {}
+  constructor(private config: _BuilderConfig) {
+    this._receiverIdentifierType = "11";
+  }
 
   private _debugAssert() {
     errorAssert(this._partyA, "Party A is required");
@@ -32,8 +35,8 @@ export class Reversal {
   /**
    * Party A
    * @param {string} code The shortcode of the organization receiving payment
-   * @returns {AccountBalance} Returns a reference to the AccountBalance object for further manipulation
-   * @memberof AccountBalance
+   * @returns {Reversal} Returns a reference to the Reversal object for further manipulation
+   * @memberof Reversal
    */
   public shortCode(code: string): Reversal {
     this._partyA = code;
@@ -43,8 +46,8 @@ export class Reversal {
   /**
    * Initiator
    * @param {string} name The name of Initiator who is making the request.
-   * @returns {AccountBalance} Returns a reference to the AccountBalance object for further manipulation
-   * @memberof AccountBalance
+   * @returns {Reversal} Returns a reference to the Reversal object for further manipulation
+   * @memberof Reversal
    * @description The name of Initiator who is making the request.
    */
   public initiator(name: string): Reversal {
@@ -55,8 +58,8 @@ export class Reversal {
   /**
    * Result URL
    * @param {string} url The URL to which the response from M-Pesa will be sent
-   * @returns {AccountBalance} Returns a reference to the AccountBalance object for further manipulation
-   * @memberof AccountBalance
+   * @returns {Reversal} Returns a reference to the Reversal object for further manipulation
+   * @memberof Reversal
    * @description The URL to which the response from M-Pesa will be sent
    */
   public resultURL(url: string): Reversal {
@@ -67,8 +70,8 @@ export class Reversal {
   /**
    * Timeout URL
    * @param {string} url The URL to which the response from M-Pesa will be sent
-   * @returns {AccountBalance} Returns a reference to the AccountBalance object for further manipulation
-   * @memberof AccountBalance
+   * @returns {Reversal} Returns a reference to the Reversal object for further manipulation
+   * @memberof Reversal
    * @description The URL to which the response from M-Pesa will be sent
    */
   public timeoutURL(url: string): Reversal {
@@ -79,8 +82,8 @@ export class Reversal {
   /**
    * Transaction ID
    * @param {string} id The unique identifier for the transaction request
-   * @returns {AccountBalance} Returns a reference to the AccountBalance object for further manipulation
-   * @memberof AccountBalance
+   * @returns {Reversal} Returns a reference to the Reversal object for further manipulation
+   * @memberof Reversal
    * @description The unique identifier for the transaction request
    */
   public transactionID(id: string): Reversal {
@@ -91,8 +94,8 @@ export class Reversal {
   /**
    * Occasion
    * @param {string} occasion The occasion for the transaction
-   * @returns {AccountBalance} Returns a reference to the AccountBalance object for further manipulation
-   * @memberof AccountBalance
+   * @returns {Reversal} Returns a reference to the Reversal object for further manipulation
+   * @memberof Reversal
    */
   public occasion(occasion: string): Reversal {
     this._occasion = occasion;
@@ -102,11 +105,23 @@ export class Reversal {
   /**
    * Remarks
    * @param {string} remarks The remarks for the transaction
-   * @returns {AccountBalance} Returns a reference to the AccountBalance object for further manipulation
-   * @memberof AccountBalance
+   * @returns {Reversal} Returns a reference to the Reversal object for further manipulation
+   * @memberof Reversal
    */
   public remarks(remarks: string): Reversal {
     this._remarks = remarks;
+    return this;
+  }
+
+  /**
+   * Receiver Identifier Type
+   * @param {number} type The type of the organization receiving the transaction
+   * @returns {Reversal} Returns a reference to the Reversal object for further manipulation
+   */
+  public receiverIdentifierType(
+    type: ReversalInterface["RecieverIdentifierType"]
+  ): Reversal {
+    this._receiverIdentifierType = type;
     return this;
   }
 
@@ -126,7 +141,7 @@ export class Reversal {
         {
           ReceiverParty: this._partyA,
           Amount: this._amount,
-          RecieverIdentifierType: "4",
+          RecieverIdentifierType: this._receiverIdentifierType,
           Initiator: this._initiator ?? "testapi",
           SecurityCredential: this.config.securityCredential,
           TransactionID: this._transactionID,
