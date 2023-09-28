@@ -4,7 +4,7 @@ export const routes = {
   oauth: "/oauth/v1/generate?grant_type=client_credentials",
   b2c: "/mpesa/b2c/v1/paymentrequest",
   b2b: "/mpesa/b2b/v1/paymentrequest",
-  c2bregister: "/mpesa/c2b/v1/registerurl",
+  c2bregister: "/mpesa/c2b/v2/registerurl",
   c2bsimulate: "/mpesa/c2b/v1/simulate",
   c2bv2simulate: "/mpesa/c2b/v2/simulate",
   accountbalance: "/mpesa/accountbalance/v1/query",
