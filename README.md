@@ -29,7 +29,7 @@ To get started, create an instance of the `Mpesa` class:
 
 ```js
 // with es-modules syntax
-import {Mpesa} from "daraja.js"
+import { Mpesa } from "daraja.js"
 
 // with common-modules syntax
 const Mpesa = require("daraja.js").Mpesa
