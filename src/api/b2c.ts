@@ -5,7 +5,7 @@ import {
   CommandID,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert, handleError, _BuilderConfig } from "../utils";
+import { _BuilderConfig, errorAssert, handleError } from "../utils";
 
 export class BusinessToCustomer {
   private _initiator: string;
