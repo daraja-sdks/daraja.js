@@ -40,7 +40,7 @@ const app = new Mpesa({
     consumerSecret: process.env.APP_SECRET, // required
     initiatorPassword: "Safaricom999!*!", // required only in production
     organizationShortCode: 174379, // optional
-    certificatePath: "some/path" // optional
+    certificatePath: "some/path", // optional
     securityCredential: "someSecureCredential" // optional
 })
 ```
