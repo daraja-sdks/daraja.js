@@ -6,6 +6,12 @@ export interface _BuilderConfig {
   shortCode: number;
   securityCredential: string;
   getAuthToken(): Promise<string>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  debug(...args: any[]): void;
+}
+
+export function pretty(obj: Record<string, unknown>): string {
+  return JSON.stringify(obj, null, 2);
 }
 
 export function handleError(error: AxiosError) {

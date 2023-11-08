@@ -6,7 +6,7 @@ import {
   StkQueryResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { _BuilderConfig, errorAssert, handleError } from "../utils";
+import { _BuilderConfig, errorAssert, handleError, pretty } from "../utils";
 import { MpesaResponse } from "../wrappers";
 
 export class STKPush {
@@ -165,27 +165,38 @@ export class STKPush {
     const app = this.config;
     const token = await app.getAuthToken();
     const Password = this._getPassword(this._getTimeStamp());
+    const payload: StkPushInterface = {
+      AccountReference: this._accountRef ?? "CompanyXLTD",
+      Amount: this._amount,
+      BusinessShortCode: +this._shortCode,
+      CallBackURL: this._callbackURL,
+      PartyA: String(this._phoneNumber),
+      PartyB: this._shortCode,
+      Password,
+      PhoneNumber: String(this._phoneNumber),
+      TransactionDesc: this._description ?? "Lipa na Mpesa Online",
+      TransactionType: this._transactionType,
+      Timestamp: this._getTimeStamp(),
+    };
+
+    app.debug(
+      "Sending STKPush Request:",
+      pretty({
+        route: routes.stkpush,
+        payload,
+      })
+    );
 
     try {
       const { data } = await app.http.post<StkPushInterface>(
         routes.stkpush,
-        {
-          AccountReference: this._accountRef ?? "CompanyXLTD",
-          Amount: this._amount,
-          BusinessShortCode: +this._shortCode,
-          CallBackURL: this._callbackURL,
-          PartyA: String(this._phoneNumber),
-          PartyB: this._shortCode,
-          Password,
-          PhoneNumber: String(this._phoneNumber),
-          TransactionDesc: this._description ?? "Lipa na Mpesa Online",
-          TransactionType: this._transactionType,
-          Timestamp: this._getTimeStamp(),
-        },
+        payload,
         {
           Authorization: `Bearer ${token}`,
         }
       );
+
+      app.debug("Received STKPush Response:", pretty(data));
 
       const values = new STKPushResponseWrapper(data);
       this._checkoutRequestID = values.getTransactionID();
@@ -209,16 +220,25 @@ export class STKPush {
     const Timestamp = this._getTimeStamp();
     const Password = this._getPassword(Timestamp);
     const token = await app.getAuthToken();
+    const payload: StkQueryInterface = {
+      BusinessShortCode: +this._shortCode,
+      CheckoutRequestID: this._checkoutRequestID,
+      Password,
+      Timestamp,
+    };
+
+    app.debug(
+      "Sending STK Query Request:",
+      pretty({
+        route: routes.stkquery,
+        payload,
+      })
+    );
 
     try {
       const { data } = await app.http.post<StkQueryInterface>(
         routes.stkquery,
-        {
-          BusinessShortCode: +this._shortCode,
-          CheckoutRequestID: this._checkoutRequestID,
-          Password,
-          Timestamp,
-        },
+        payload,
         {
           Authorization: `Bearer ${token}`,
         }

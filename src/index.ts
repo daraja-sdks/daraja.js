@@ -9,10 +9,10 @@ import { STKPush, STKPushResultWrapper } from "./api/stkPush";
 import { TransactionStatus } from "./api/transactionStatus";
 import { routes } from "./models/routes";
 import {
-  getProductionCert,
-  getSandboxCert,
   HttpClient,
   _BuilderConfig,
+  getProductionCert,
+  getSandboxCert,
 } from "./utils";
 import { ValidationRequestWrapper } from "./wrappers";
 
@@ -35,6 +35,7 @@ export class Mpesa {
   private securityCredential: string;
   private globalShortCode: number;
   private builderCfg: _BuilderConfig;
+  private debugMode: boolean;
 
   constructor(
     {
@@ -44,9 +45,11 @@ export class Mpesa {
       initiatorPassword,
       certificatePath,
       organizationShortCode,
-    }: MpesaCredentials,
+      debug = process.env.DEBUG === "true",
+    }: MpesaCredentials & { debug?: boolean },
     private environment = "sandbox"
   ) {
+    this.debugMode = debug;
     this.consumerKey = consumerKey;
     this.consumerSecret = consumerSecret;
     this.globalShortCode = organizationShortCode;
@@ -69,11 +72,17 @@ export class Mpesa {
     }
 
     this.builderCfg = {
+      debug: this.debug.bind(this),
       getAuthToken: this._getAuthToken.bind(this),
       securityCredential: this.securityCredential,
       http: this._http,
       shortCode: this.globalShortCode,
     };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private debug(...args: any[]) {
+    this.debugMode && console.log(...args);
   }
 
   private async _getAuthToken(): Promise<string> {
