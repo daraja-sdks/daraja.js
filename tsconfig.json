@@ -10,6 +10,7 @@
     "outDir": "dist",
     "baseUrl": "src",
     "sourceMap": true,
+    "skipLibCheck": true,
     "lib": ["ES6"]
   },
   "include": ["src/**/*.ts"],

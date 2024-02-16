@@ -91,7 +91,7 @@ export class Mpesa {
       initial_timestamp: string
   }>("mpesa_api_access_token")
 
-    if (accessToken && (new Date().getTime() - new Date(accessToken.initialTimestamp).getTime()) / 1000 < accessToken.expires_in) {
+    if (accessToken && (new Date().getTime() - new Date(accessToken.initial_timestamp).getTime()) / 1000 < accessToken.expires_in) {
       return accessToken.token;
     } else {
       // token expired
