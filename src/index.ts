@@ -8,6 +8,7 @@ import { Reversal } from "./api/reversal";
 import { STKPush, STKPushResultWrapper } from "./api/stkPush";
 import { TransactionStatus } from "./api/transactionStatus";
 import { routes } from "./models/routes";
+import storage from "./storage";
 import {
   HttpClient,
   _BuilderConfig,
@@ -27,8 +28,6 @@ interface MpesaCredentials {
 
 export class Mpesa {
   private _http: HttpClient;
-  private _lastTokenTime: number;
-  private _currentToken: string;
   private consumerKey: string;
   private consumerSecret: string;
   private initiatorPassword: string;
@@ -86,9 +85,14 @@ export class Mpesa {
   }
 
   private async _getAuthToken(): Promise<string> {
-    if (Date.now() - this._lastTokenTime < 3599) {
-      // cache hit, sort of :)
-      return this._currentToken;
+    const accessToken = await storage.getItem<{
+      token: string
+      expires_in: number
+      initial_timestamp: string
+  }>("mpesa_api_access_token")
+
+    if (accessToken && (new Date().getTime() - new Date(accessToken.initialTimestamp).getTime()) / 1000 < accessToken.expires_in) {
+      return accessToken.token;
     } else {
       // token expired
       try {
@@ -101,8 +105,11 @@ export class Mpesa {
             ),
         });
 
-        this._currentToken = data.access_token;
-        this._lastTokenTime = Date.now();
+        await storage.setItem("mpesa_api_access_token", {
+          token: data.access_token,
+          expires_in: data.expires_in,
+          initial_timestamp: new Date().toISOString()
+        });
 
         return data.access_token;
       } catch (error) {
