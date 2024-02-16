@@ -1,10 +1,3 @@
-<p align="center">
-<img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/daraja-sdks/daraja.js/ci.yml?logo=github&branch=main">
-<img alt="Codecov" src="https://img.shields.io/codecov/c/gh/ndaba1/daraja.js?logo=codecov">
-<img alt="npm" src="https://img.shields.io/npm/dw/daraja.js">
-<img alt="Discord" src="https://img.shields.io/discord/998532562706243606?logo=discord">
-</p>
-
 # Daraja.js
 
 A node.js wrapper for seamless integration with Mpesa's Daraja API. This library provides a builder-style interface to enhance the ease of use. Visit https://daraja-sdks.github.io to find implementations in other languages and more documentation.
@@ -21,7 +14,12 @@ A node.js wrapper for seamless integration with Mpesa's Daraja API. This library
 
 ## Documentation
 
-More In-depth documentation on library usage can be found [here](https://daraja-sdks.github.io/en/impl/node). Also, full-blown examples on library usage can be found at the daraja-sdks github repos.
+This is a fork of the original. More In-depth documentation on library usage can be found [here](https://daraja-sdks.github.io/en/impl/node).
+
+## Getting Started
+```shell
+pnpm add https://github.com/kgarchie/daraja.js.git
+```
 
 ## Creating an app instance
 
