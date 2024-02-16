@@ -1,13 +1,18 @@
 import { Mpesa } from "../src/index";
+import {beforeAll, describe, it, expect} from "vitest";
+import "dotenv/config";
 
 describe("basic endpoints tests", () => {
   let app: Mpesa;
 
   beforeAll(async () => {
+    console.log("APP KEY", process.env.APP_KEY);
+    console.log("APP SECRET", process.env.APP_SECRET);
+    console.log("LNM PASSKEY", process.env.LNM_PASSKEY);
     app = new Mpesa(
       {
-        consumerKey: process.env.APP_KEY,
-        consumerSecret: process.env.APP_SECRET,
+        consumerKey: process.env.APP_KEY!,
+        consumerSecret: process.env.APP_SECRET!,
         initiatorPassword: "Safaricom999!*!",
         organizationShortCode: 174379,
       },
@@ -21,7 +26,7 @@ describe("basic endpoints tests", () => {
       .amount(1)
       .callbackURL("https://example.com/callback")
       .phoneNumber(254708374149)
-      .lipaNaMpesaPassKey(process.env.LNM_PASSKEY)
+      .lipaNaMpesaPassKey(process.env.LNM_PASSKEY!)
       .send();
 
     expect(res.isOkay()).toBe(true);

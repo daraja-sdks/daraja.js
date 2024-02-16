@@ -6,7 +6,6 @@ export interface _BuilderConfig {
   shortCode: number;
   securityCredential: string;
   getAuthToken(): Promise<string>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   debug(...args: any[]): void;
 }
 
