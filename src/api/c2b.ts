@@ -168,7 +168,7 @@ export class CustomerToBusiness {
     const token = await app.getAuthToken();
 
     try {
-      const { data } = await app.http.post(
+      const data = await app.http.post(
         routes.c2bsimulate,
         {
           ShortCode: this._shortCode,
@@ -201,7 +201,7 @@ export class CustomerToBusiness {
     const token = await app.getAuthToken();
 
     try {
-      const { data } = await app.http.post<C2BRegisterInterface>(
+      const data = await app.http.post<C2BRegisterInterface>(
         routes.c2bregister,
         {
           ShortCode: +this._shortCode,

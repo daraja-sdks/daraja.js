@@ -11,7 +11,7 @@
     "baseUrl": "src",
     "sourceMap": true,
     "skipLibCheck": true,
-    "lib": ["ES6"]
+    "lib": ["ES6", "DOM", "DOM.Iterable"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]

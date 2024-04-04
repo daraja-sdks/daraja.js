@@ -107,7 +107,7 @@ export class TransactionStatus {
     const token = await app.getAuthToken();
 
     try {
-      const { data } = await app.http.post<TransactionStatusInterface>(
+      const data = await app.http.post<TransactionStatusInterface>(
         routes.transactionstatus,
         {
           PartyA: this._shortCode,

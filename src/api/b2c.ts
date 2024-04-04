@@ -146,7 +146,7 @@ export class BusinessToCustomer {
     const token = await app.getAuthToken();
 
     try {
-      const { data } = await app.http.post<B2CInterface>(
+      const data = await app.http.post<B2CInterface>(
         routes.b2c,
         {
           Amount: this._amount,

@@ -136,7 +136,7 @@ export class Reversal {
     const token = await app.getAuthToken();
 
     try {
-      const { data } = await app.http.post<ReversalInterface>(
+      const data = await app.http.post<ReversalInterface>(
         routes.reversal,
         {
           ReceiverParty: this._partyA,
@@ -156,7 +156,7 @@ export class Reversal {
         }
       );
 
-      const values = new ReversalResponseWrapper(data);
+      const values = new ReversalResponseWrapper(data as any);
       return Promise.resolve(values);
     } catch (error) {
       return handleError(error);

@@ -1,5 +1,5 @@
-import axios, { AxiosError } from "axios";
 import { routes } from "./models/routes";
+import { ofetch as $fetch, type FetchError } from "ofetch";
 
 export interface _BuilderConfig {
   http: HttpClient;
@@ -9,11 +9,11 @@ export interface _BuilderConfig {
   debug(...args: any[]): void;
 }
 
-export function pretty(obj: Record<string, unknown>): string {
+export function pretty(obj: Object): string {
   return JSON.stringify(obj, null, 2);
 }
 
-export function handleError(error: AxiosError) {
+export function handleError(error: FetchError) {
   const stub = {
     isOkay: () => true,
     data: {},
@@ -69,22 +69,26 @@ export class HttpClient {
   }
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  public async get<T>(url: string, headers: any) {
-    return axios.get<T>(this.baseUrl + url, {
+  public async get<T>(url: string, _headers: any) {
+    return await $fetch<T>(this.baseUrl + url, {
       headers: {
-        ...headers,
+        ..._headers,
         "Content-Type": "application/json",
-      },
-    });
+      }
+    })
   }
 
-  public async post<T>(url: string, body: T, hds: any) {
-    return axios.post(this.baseUrl + url, body, {
+  public async post<T>(url: string, _body: T, _headers: any) {
+    return await $fetch<T>(this.baseUrl + url, {
+      method: 'POST',
       headers: {
-        ...hds,
+        ..._headers,
         "Content-Type": "application/json",
       },
-    });
+      body: {
+        ..._body
+      }
+    })
   }
 }
 

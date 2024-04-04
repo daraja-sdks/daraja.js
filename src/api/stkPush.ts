@@ -188,7 +188,7 @@ export class STKPush {
     );
 
     try {
-      const { data } = await app.http.post<StkPushInterface>(
+      const data = await app.http.post<StkPushInterface>(
         routes.stkpush,
         payload,
         {
@@ -236,7 +236,7 @@ export class STKPush {
     );
 
     try {
-      const { data } = await app.http.post<StkQueryInterface>(
+      const data = await app.http.post<StkQueryInterface>(
         routes.stkquery,
         payload,
         {
