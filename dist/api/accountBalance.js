@@ -86,7 +86,7 @@ class AccountBalance {
             const app = this.config;
             const token = yield app.getAuthToken();
             try {
-                const { data } = yield app.http.post(routes_1.routes.accountbalance, {
+                const data = yield app.http.post(routes_1.routes.accountbalance, {
                     PartyA: this._partyA,
                     IdentifierType: "4",
                     Initiator: (_a = this._initiator) !== null && _a !== void 0 ? _a : "testapi",

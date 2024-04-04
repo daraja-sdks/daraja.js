@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import { type FetchError } from "ofetch";
 export interface _BuilderConfig {
     http: HttpClient;
     shortCode: number;
@@ -6,8 +6,8 @@ export interface _BuilderConfig {
     getAuthToken(): Promise<string>;
     debug(...args: any[]): void;
 }
-export declare function pretty(obj: Record<string, unknown>): string;
-export declare function handleError(error: AxiosError): Promise<{
+export declare function pretty(obj: Object): string;
+export declare function handleError(error: FetchError): Promise<{
     isOkay: () => boolean;
     data: {};
     ResponseDescription: string;
@@ -23,8 +23,8 @@ export declare class HttpClient {
     private env;
     private baseUrl;
     constructor(env?: string);
-    get<T>(url: string, headers: any): Promise<import("axios").AxiosResponse<T, any>>;
-    post<T>(url: string, body: T, hds: any): Promise<import("axios").AxiosResponse<any, any>>;
+    get<T>(url: string, _headers: any): Promise<T>;
+    post<T>(url: string, _body: T, _headers: any): Promise<T>;
 }
 export declare function getProductionCert(): string;
 export declare function getSandboxCert(): string;

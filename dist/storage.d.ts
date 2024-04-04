@@ -1,2 +1,2 @@
-declare const storage: import("unstorage/dist/shared/unstorage.745f9650").a<import("unstorage/dist/shared/unstorage.745f9650").S>;
+declare const storage: import("unstorage/dist/shared/unstorage.5b07592d").a<import("unstorage/dist/shared/unstorage.5b07592d").S>;
 export default storage;

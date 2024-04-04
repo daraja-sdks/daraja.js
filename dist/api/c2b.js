@@ -149,7 +149,7 @@ class CustomerToBusiness {
             const app = this.config;
             const token = yield app.getAuthToken();
             try {
-                const { data } = yield app.http.post(routes_1.routes.c2bsimulate, {
+                const data = yield app.http.post(routes_1.routes.c2bsimulate, {
                     ShortCode: this._shortCode,
                     CommandID: this._commandID,
                     Amount: this._amount,
@@ -177,7 +177,7 @@ class CustomerToBusiness {
             const app = this.config;
             const token = yield app.getAuthToken();
             try {
-                const { data } = yield app.http.post(routes_1.routes.c2bregister, {
+                const data = yield app.http.post(routes_1.routes.c2bregister, {
                     ShortCode: +this._shortCode,
                     ConfirmationURL: this._confirmationUrl,
                     ValidationURL: this._validationUrl,

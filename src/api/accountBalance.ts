@@ -91,7 +91,7 @@ export class AccountBalance {
     const token = await app.getAuthToken();
 
     try {
-      const { data } = await app.http.post<AccountBalanceInterface>(
+      const data = await app.http.post<AccountBalanceInterface>(
         routes.accountbalance,
         {
           PartyA: this._partyA,

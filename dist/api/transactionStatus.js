@@ -94,7 +94,7 @@ class TransactionStatus {
             const app = this.config;
             const token = yield app.getAuthToken();
             try {
-                const { data } = yield app.http.post(routes_1.routes.transactionstatus, {
+                const data = yield app.http.post(routes_1.routes.transactionstatus, {
                     PartyA: this._shortCode,
                     IdentifierType: (_a = this._identifierType) !== null && _a !== void 0 ? _a : "1",
                     Initiator: (_b = this._initiator) !== null && _b !== void 0 ? _b : "testapi",

@@ -122,7 +122,7 @@ class Reversal {
             const app = this.config;
             const token = yield app.getAuthToken();
             try {
-                const { data } = yield app.http.post(routes_1.routes.reversal, {
+                const data = yield app.http.post(routes_1.routes.reversal, {
                     ReceiverParty: this._partyA,
                     Amount: this._amount,
                     RecieverIdentifierType: this._receiverIdentifierType,

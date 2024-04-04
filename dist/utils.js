@@ -8,13 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSandboxCert = exports.getProductionCert = exports.HttpClient = exports.errorAssert = exports.handleError = exports.pretty = void 0;
-const axios_1 = __importDefault(require("axios"));
 const routes_1 = require("./models/routes");
+const ofetch_1 = require("ofetch");
 function pretty(obj) {
     return JSON.stringify(obj, null, 2);
 }
@@ -71,17 +68,19 @@ class HttpClient {
             : (this.baseUrl = routes_1.routes.sandbox);
     }
     /* eslint-disable @typescript-eslint/no-explicit-any */
-    get(url, headers) {
+    get(url, _headers) {
         return __awaiter(this, void 0, void 0, function* () {
-            return axios_1.default.get(this.baseUrl + url, {
-                headers: Object.assign(Object.assign({}, headers), { "Content-Type": "application/json" }),
+            return yield (0, ofetch_1.ofetch)(this.baseUrl + url, {
+                headers: Object.assign(Object.assign({}, _headers), { "Content-Type": "application/json" })
             });
         });
     }
-    post(url, body, hds) {
+    post(url, _body, _headers) {
         return __awaiter(this, void 0, void 0, function* () {
-            return axios_1.default.post(this.baseUrl + url, body, {
-                headers: Object.assign(Object.assign({}, hds), { "Content-Type": "application/json" }),
+            return yield (0, ofetch_1.ofetch)(this.baseUrl + url, {
+                method: 'POST',
+                headers: Object.assign(Object.assign({}, _headers), { "Content-Type": "application/json" }),
+                body: Object.assign({}, _body)
             });
         });
     }

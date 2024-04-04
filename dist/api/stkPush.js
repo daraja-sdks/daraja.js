@@ -161,7 +161,7 @@ class STKPush {
                 payload,
             }));
             try {
-                const { data } = yield app.http.post(routes_1.routes.stkpush, payload, {
+                const data = yield app.http.post(routes_1.routes.stkpush, payload, {
                     Authorization: `Bearer ${token}`,
                 });
                 app.debug("Received STKPush Response:", (0, utils_1.pretty)(data));
@@ -198,7 +198,7 @@ class STKPush {
                 payload,
             }));
             try {
-                const { data } = yield app.http.post(routes_1.routes.stkquery, payload, {
+                const data = yield app.http.post(routes_1.routes.stkquery, payload, {
                     Authorization: `Bearer ${token}`,
                 });
                 return Promise.resolve(new STKQueryResponseWrapper(data));

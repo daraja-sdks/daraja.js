@@ -130,7 +130,7 @@ class BusinessToCustomer {
             const app = this.config;
             const token = yield app.getAuthToken();
             try {
-                const { data } = yield app.http.post(routes_1.routes.b2c, {
+                const data = yield app.http.post(routes_1.routes.b2c, {
                     Amount: this._amount,
                     CommandID: (_a = this._commandID) !== null && _a !== void 0 ? _a : "SalaryPayment",
                     InitiatorName: (_b = this._initiator) !== null && _b !== void 0 ? _b : "testapi",
