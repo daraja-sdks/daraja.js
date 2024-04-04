@@ -97,7 +97,7 @@ export class Mpesa {
       // token expired
       try {
         /* eslint-disable @typescript-eslint/no-explicit-any */
-        const { data } = await this._http.get<any>(routes.oauth, {
+        const data = await this._http.get<any>(routes.oauth, {
           Authorization:
             "Basic " +
             Buffer.from(this.consumerKey + ":" + this.consumerSecret).toString(
