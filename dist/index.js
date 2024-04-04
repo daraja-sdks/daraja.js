@@ -70,7 +70,7 @@ class Mpesa {
                 // token expired
                 try {
                     /* eslint-disable @typescript-eslint/no-explicit-any */
-                    const { data } = yield this._http.get(routes_1.routes.oauth, {
+                    const data = yield this._http.get(routes_1.routes.oauth, {
                         Authorization: "Basic " +
                             Buffer.from(this.consumerKey + ":" + this.consumerSecret).toString("base64"),
                     });
