@@ -35,6 +35,7 @@ export class Mpesa {
   private globalShortCode: number;
   private builderCfg: _BuilderConfig;
   private debugMode: boolean;
+  private environment: "sandbox" | "production";
 
   constructor(
     {
@@ -46,8 +47,9 @@ export class Mpesa {
       organizationShortCode,
       debug = process.env.DEBUG === "true",
     }: MpesaCredentials & { debug?: boolean },
-    private environment = "sandbox"
+    envirmoment: "sandbox" | "production" = "sandbox"
   ) {
+    this.environment = envirmoment;
     this.debugMode = debug;
     this.consumerKey = consumerKey;
     this.consumerSecret = consumerSecret;
