@@ -3,7 +3,7 @@ import {
   TransactionStatusResponseInterface,
 } from "../models/interfaces";
 import { routes } from "../models/routes";
-import { errorAssert, handleError, _BuilderConfig } from "../utils";
+import { _BuilderConfig, errorAssert, handleError } from "../utils";
 import { MpesaResponse } from "../wrappers";
 
 export class TransactionStatus {
@@ -20,7 +20,7 @@ export class TransactionStatus {
   constructor(private config: _BuilderConfig) {
     // defaults
     this._commandID = "TransactionStatusQuery";
-    this._identifierType = "1";
+    this._identifierType = "4";
     this._initiator = "testapi";
   }
 
@@ -92,6 +92,15 @@ export class TransactionStatus {
   }
 
   /**
+   * @param  {string} identifierType "1" = MSISDN, "2" = Till Number, "4"=Shortcode
+   * @returns {TransactionStatus} A reference to the TransactionStatus object for further manipulation
+   */
+  public identifierType(identifierType: "1" | "2" | "4"): TransactionStatus {
+    this._identifierType = identifierType;
+    return this;
+  }
+
+  /**
    * @param  {string} url The timeout end-point that receives a timeout response.
    * @returns {TransactionStatus} A reference to the TransactionStatus object for further manipulation
    */
@@ -111,7 +120,7 @@ export class TransactionStatus {
         routes.transactionstatus,
         {
           PartyA: this._shortCode,
-          IdentifierType: this._identifierType ?? "1",
+          IdentifierType: this._identifierType ?? "4",
           Initiator: this._initiator ?? "testapi",
           SecurityCredential: this.config.securityCredential,
           QueueTimeOutURL: this._timeoutURL,
